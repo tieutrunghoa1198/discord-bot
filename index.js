@@ -1,6 +1,6 @@
 const Discord = require('discord.js-commando');
 const bot = new Discord.Client();
-const TOKEN = 'NTI0OTIwOTU4MTc2MzI5NzM4.Xlak7w.UmtYICSCYZ7UhfbDcd7XgyNyEfQ';
+const token = process.env.token;
 var name = ['kien', 'ninh', 'toan to', 'canh', 'canh muc', 'cảnh', 'bua', 'bứa', 'bita'];
 var quest = ['ai đẹp trai nhất hạ long', 'lộc lí', 'hôm nay sinh nhật ai', '75 củ đã vô địch sever chưa', 'tí nữa tao comeback', 'hôm nay ăn gì'];
 var current = new Date();
@@ -12,7 +12,7 @@ bot.registry.registerDefaults();
 
 global.servers =[];
 
-bot.login(TOKEN);
+bot.login(token);
 
 bot.on('ready', () => {
     console.log('Server is on!!');
