@@ -4,7 +4,7 @@ const token = 'NTI0OTIwOTU4MTc2MzI5NzM4.Xlan2g.38w-Ja7bs9hougKv488SM9T37ZE';
 var name = ['kien', 'ninh', 'toan to', 'canh', 'canh muc', 'cảnh', 'bua', 'bứa', 'bita'];
 var quest = ['hôm nay ăn gì', 'ai đẹp trai nhất hạ long', 'lộc lí', 'hôm nay sinh nhật ai', '75 củ đã vô địch sever chưa', 'tí nữa tao comeback', 'hôm nay ăn gì'];
 var current = new Date();
-//new semester is on new line
+//new semester is on 
 bot.registry.registerGroup('simple', 'Simple');
 bot.registry.registerGroup('music', 'Music');
 bot.registry.registerCommandsIn(__dirname + '/commands');
