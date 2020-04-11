@@ -1,7 +1,7 @@
 require('dotenv').config()
 const { Client, Collection } = require('discord.js');
 const bot = new Client();
-const config = require('./config')
+const config = require('./config/config')
 const token = process.env.TOKEN
 //Attaching config to bot so it could be accessed anywhere 
 bot.config = config
