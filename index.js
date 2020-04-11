@@ -1,21 +1,28 @@
-const { Client } = require('discord.js');
-// const string = require('querystring')
-const logSymbols = require('log-symbols')
+require('dotenv').config()
+const { Client, Collection } = require('discord.js');
 const bot = new Client();
 const config = require('./config')
-// const token = 'NTI0OTIwOTU4MTc2MzI5NzM4.XpFtMw.tiPgpBjQ_b_yTPUJU7waQD2jYJU';
+const token = process.env.TOKEN
 //Attaching config to bot so it could be accessed anywhere 
 bot.config = config
 
+//Once the bot is ready, then do smt.....
 bot.once('ready', () => {
     console.log(`Logged in as `);
 });
+
+// Creating command and aliases collection.
+["commands", "aliases"].forEach(x => bot[x] = new Collection());
 
 bot.on('message', msg => {
     console.log(msg.content + logSymbols.success)
 })
 
 //Login the bot with provided token in config file 
-bot.login(bot.config.token).catch(console.error());
+bot.login(token).catch(err => {
+    console.log(process.env.TOKEN)
+    console.log("Cannot login \n")
+    console.log(err)
+});
 
 
