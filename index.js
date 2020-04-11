@@ -15,6 +15,7 @@ bot.once('ready', () => {
 ["commands", "aliases"].forEach(x => bot[x] = new Collection());
 
 bot.on('message', msg => {
+    if(msg.author.bot) return
     if(msg.content.toLowerCase() === "hello") msg.channel.reply('Lô con cặc.')
 })
 
