@@ -16,7 +16,7 @@ bot.once('ready', () => {
 
 bot.on('message', msg => {
     if(msg.author.bot) return
-    if(msg.content.toLowerCase() === "hello") msg.channel.reply('Lô con cặc.')
+    if(msg.content.toLowerCase() === "hello") msg.channel.send('Lô con cặc.')
 })
 
 //Login the bot with provided token in config file 
