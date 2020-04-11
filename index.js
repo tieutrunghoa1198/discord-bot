@@ -15,7 +15,7 @@ bot.once('ready', () => {
 ["commands", "aliases"].forEach(x => bot[x] = new Collection());
 
 bot.on('message', msg => {
-    console.log(msg.content + logSymbols.success)
+    if(msg === "hello") msg.reply('Lô con cặc.')
 })
 
 //Login the bot with provided token in config file 
