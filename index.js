@@ -15,7 +15,7 @@ bot.once('ready', () => {
 ["commands", "aliases"].forEach(x => bot[x] = new Collection());
 
 bot.on('message', msg => {
-    if(msg === "hello") msg.reply('Lô con cặc.')
+    if(msg.content.toLowerCase() === "hello") msg.channel.reply('Lô con cặc.')
 })
 
 //Login the bot with provided token in config file 
