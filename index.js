@@ -11,7 +11,7 @@ BOT.once('ready', () => {
     console.log(`Logged in as `);
 });
 
-// Creating command and aliases collection.
+// Creating command and aliases collection
 ["commands", "aliases"].forEach(x => BOT[x] = new Collection());
 
 BOT.on('message', msg => {
