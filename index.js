@@ -9,6 +9,7 @@ client.commands = new Collection();
 
 loadCommands.test12();
 
+// load command files 
 for (const file of commandFiles) {
 	const command = require(`./commands/${file}`);
 	// set a new item in the Collection
@@ -16,6 +17,7 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
+// this code to handle interaction
 client.on('interactionCreate', async interaction => {
 	if (!interaction.isCommand()) return;
 
@@ -32,10 +34,12 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
+// bot is ready to use!!
 client.once('ready', () => {
 	console.log(client.user.username);
 });
 
+// debug message 
 client.on('messageCreate', msg => {
 	console.log(msg.content);
 });
