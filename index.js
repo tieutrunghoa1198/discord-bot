@@ -1,56 +1,40 @@
-require('dotenv').config()
-const { Client, Collection } = require('discord.js')
-const client = new Client()
-const config = require('./config/config')
-const TOKEN = process.env.TOKEN
-const sendMsg = require('./commands/send_message')
-const clientID = '159985870458322944'
-//Attaching config to client so it could be accessed anywhere
-client.config = config
+require('dotenv').config();
+const { Client, Intents, Collection } = require('discord.js');
+const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const TOKEN = process.env.TOKEN;
+const fs = require('fs');
+const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
+client.commands = new Collection();
 
-//Once the client is ready, then do smt.....
+for(const file of commandFiles) {
+	const command = require(`./commands/${file}`);
+	client.commands.set(command.data.name, command);
+}
+
+// this event will only trigger one time after logging in
 client.once('ready', () => {
-  console.log(`Logged in as `)
-})
+	console.log('Ready!');
+});
 
-// Creating command and aliases collection
-;['commands', 'aliases'].forEach(x => (client[x] = new Collection()))
+client.on('interactionCreate', async interaction => {
+	if (!interaction.isCommand()) return;
+
+	const { commandName } = interaction;
+
+	if (commandName === 'ping') {
+		await interaction.reply('Pong!');
+	}
+	else if (commandName === 'beep') {
+		await interaction.reply('Boop!');
+	}
+	else if (commandName === 'server') {
+		await interaction.reply(`This server's name is: ${interaction.guild.name}`);
+	}
+});
 
 client.on('message', msg => {
-  if (msg.author.client) return
-  if (msg.content.toLowerCase() === 'hello') msg.channel.send(`Lô con cặc.`)
-  // client.commands
-})
+	console.log(msg.author);
+});
 
-//client commands for MEE6 only
-client.on('message', msg => {
-  console.log(msg.author.id)
-  const channel = '878119742228037744'
-  const botID = '159985870458322944'
-  if (msg.channel.id == channel) {
-    if (msg.author.id === botID) {
-      return
-    } else {
-      msg.delete(1000)
-    }
-  }
-})
-
-//client commands for groovie only
-client.on('message', msg => {
-  const channel = '878130330068996097'
-  const botID = '234395307759108106'
-  if (msg.channel.id == channel) {
-    if (msg.author.id === botID) {
-      return
-    } else {
-      msg.delete(1000)
-    }
-  }
-})
-
-//Login the client with provided token in config file
-client.login(TOKEN).catch(err => {
-  console.log('Cannot login \n')
-  console.log(err)
-})
+// login
+client.login(TOKEN);

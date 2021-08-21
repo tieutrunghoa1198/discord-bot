@@ -1,4 +1,4 @@
 module.exports = {
-    prefix: "!",
-    owners: [""],
-}
+	prefix: '!',
+	owners: [''],
+};
