@@ -17,7 +17,8 @@
     "discord-api-types": "^0.22.0",
     "discord.js": "^13.2.0-dev.1629547386.d6e6244",
     "dotenv": "^8.2.0",
-    "fs": "0.0.1-security"
+    "fs": "0.0.1-security",
+    "nodemon": "^2.0.12"
   },
   "devDependencies": {
     "eslint": "^7.32.0"
