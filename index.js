@@ -4,7 +4,7 @@ const { Client, Intents, Collection } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const fs = require('fs');
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-const loadCommands = require('./registerCommand.JS');
+const loadCommands = require('./registerCommand.js');
 client.commands = new Collection();
 
 loadCommands.test12();
