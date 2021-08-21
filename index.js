@@ -36,6 +36,7 @@ client.on('interactionCreate', async interaction => {
 
 // bot is ready to use!!
 client.once('ready', () => {
+	client.user.setActivity('weed', { type: 'PLAYING' });
 	console.log(client.user.username);
 });
 
