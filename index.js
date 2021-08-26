@@ -1,18 +1,18 @@
 require('dotenv').config();
 const TOKEN = process.env.TOKEN;
+const uri = process.env.uri;
+const loadCommands = require('./registerCommand.js');
+const channels = require('./models/Channel.js');
+const fs = require('fs');
+const mongoose = require('mongoose');
 const { Client, Intents, Collection } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
-const fs = require('fs');
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
-const loadCommands = require('./registerCommand.js');
-const mongoose = require('mongoose');
 
-const uri = process.env.uri;
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connection.on('error', err => {
   console.log(err);
 });
-const channels = require('./models/Channel.js');
 
 client.commands = new Collection();
 
@@ -53,13 +53,23 @@ client.once('ready', () => {
 client.on('messageCreate', msg => {
 	const id = msg.channelId;
 	const authorId = msg.author.id;
-	channels.find({ channelId: id, permittedUsers: authorId }, function(err, adventure) {
-		if(err) {
-			console.log(err);
+
+	channels.find({ channelId: id }, function(err, channel) {
+		if(channel.length === 0) {
+			return;
 		}
-		else if(adventure.length === 0) {
-			msg.delete();
-		}
+		
+		if(err) {console.log(err);}
+		else {
+		channels.find({ permittedUsers : authorId }, function(err, data) {
+			if(err) {
+				console.log(err);
+			}
+			else if(data.length === 0) {
+				msg.delete();
+			}
+		});
+	}
 	});
 });
 
