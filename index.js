@@ -5,6 +5,16 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 const fs = require('fs');
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const loadCommands = require('./registerCommand.js');
+const mongoose = require('mongoose');
+
+const password = process.env.pass;
+const uri = 'mongodb+srv://tieuhoa:' + password + '@cluster0.7bslq.mongodb.net/discord?retryWrites=true&w=majority';
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connection.on('error', err => {
+  console.log(err);
+});
+const channels = require('./models/Channel.js');
+
 client.commands = new Collection();
 
 loadCommands.test12();
@@ -40,39 +50,19 @@ client.once('ready', () => {
 	console.log(client.user.username);
 });
 
-// debug message 
+// delete not neccessary message 
 client.on('messageCreate', msg => {
-	console.log(msg.content);
+	const id = msg.channelId;
+	const authorId = msg.author.id;
+	channels.find({ channelId: id, permittedUsers: authorId }, function(err, adventure) {
+		if(err) {
+			console.log(err);
+		}
+		else if(adventure.length === 0) {
+			msg.delete();
+		}
+	});
 });
-
-// commands for MEE6 bot 
-client.on('messageCreate', msg => {
-	const channel = '878119742228037744';
-	const botID = '159985870458322944';
-    if(msg.channelId == channel) {
-        if(msg.author.id === botID) {
-            return;
-        }
-				else {
-            msg.delete(1000);
-        }    
-    }
-});
-
-// commands for Groovie bot 
-client.on('messageCreate', msg => {
-	const channel = '878130330068996097';
-	const botID = '234395307759108106';
-    if(msg.channelId == channel) {
-        if(msg.author.id === botID) {
-            return;
-        }
-				else {
-            msg.delete(1000);
-        }    
-    }
-});
-
 
 // login
 client.login(TOKEN);
