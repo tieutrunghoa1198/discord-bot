@@ -59,9 +59,7 @@ client.on('messageCreate', msg => {
 			return;
 		}
 		
-		if(err) {console.log(err);}
-		else {
-		channels.find({ permittedUsers : authorId }, function(err, data) {
+		channels.find({ channelId: id, permittedUsers : authorId }, function(err, data) {
 			if(err) {
 				console.log(err);
 			}
@@ -69,7 +67,7 @@ client.on('messageCreate', msg => {
 				msg.delete();
 			}
 		});
-	}
+		
 	});
 });
 
