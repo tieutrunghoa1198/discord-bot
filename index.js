@@ -7,8 +7,7 @@ const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('
 const loadCommands = require('./registerCommand.js');
 const mongoose = require('mongoose');
 
-const password = process.env.pass;
-const uri = 'mongodb+srv://tieuhoa:' + password + '@cluster0.7bslq.mongodb.net/discord?retryWrites=true&w=majority';
+const uri = process.env.uri;
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connection.on('error', err => {
   console.log(err);
