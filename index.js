@@ -3,11 +3,11 @@ const TOKEN = process.env.TOKEN;
 const uri = process.env.uri;
 const channels = require('./models/Channel.js');
 const fs = require('fs');
-
 const { Client, Intents, Collection } = require('discord.js');
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 const mongoose = require('mongoose');
+
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connection.on('error', err => {
   console.log(err);
