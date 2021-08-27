@@ -11,6 +11,7 @@ const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_
 const fs = require('fs');
 const commandFiles = fs.readdirSync('./commands').filter(file => file.endsWith('.js'));
 
+// mongo connect
 const mongoose = require('mongoose');
 mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connection.on('error', err => {
@@ -24,20 +25,28 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
+/*
+	=========================== START OF MAIN FUNCTION ===========================
+*/
+
 // commands handler
 client.on('interactionCreate', async interaction => {
 	commandHandler(interaction, client);
 });
 
+// delete message in specified channels
+client.on('messageCreate', msg => {
+	messageHandler(msg);
+});
+
+/*
+	=========================== END OF MAIN FUNCTION ===========================
+*/
+
 // bot is ready to use!!
 client.once('ready', () => {
 	client.user.setActivity('weed', { type: 'PLAYING' });
 	console.log(client.user.username);
-});
-
-// delete message in specified channels
-client.on('messageCreate', msg => {
-	messageHandler(msg);
 });
 
 // login
