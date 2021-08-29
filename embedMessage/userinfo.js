@@ -1,6 +1,25 @@
+/* eslint-disable */
 const { MessageEmbed } = require('discord.js');
+const moment = require('moment');
+
+const trimArr = (arr, maxLen = 10) => {
+    if(arr.length > maxLen){
+        const len =  arr.length - maxLen;
+        arr = arr.slice(0, maxLen);
+        arr.push(`${len} more...`);
+    }
+    return arr;
+};
+
+
 
 const info = (interaction) => {
+    // const roles = interaction.roles
+    //     .sort((a,b) => {
+    //         b.position - a.position
+    //     })
+    //     .map(role => role.toString())
+    //     .slice(0,0);
     const userinfo = new MessageEmbed()
         .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true, size: 512 }))  
         .setColor('#0099ff')
@@ -9,9 +28,45 @@ const info = (interaction) => {
             '#' + interaction.user.discriminator, 
             interaction.user.displayAvatarURL({ dynamic: true }))
         .addFields(
-            { name: '**Username**', value: `\${${interaction.user.username}}` },
-            { name: 'asd', value: 'asd' },
+            
+            { 
+                name: '**Nickname**', 
+                value: `\`${interaction.member.nickname}\``, 
+                inline: true 
+            },
+            { 
+                name: '**ID**', 
+                value: `\`${interaction.user.id}\``, 
+                inline: true 
+            },
+            { 
+                name: '**Avatar**', 
+                value: `[\`Link to avatar\`](${interaction.user.displayAvatarURL({ dynamic: true })})`, 
+                inline: true 
+            },
+            { 
+                name: '**Date Joined DC**', 
+                value: `\`${moment(interaction.member.joinedTimestamp).format('LLLL')}\``, 
+                inline: true 
+            },
+            { 
+                name: '**Status**', 
+                value: `\`${interaction.member.user.presence}\``, 
+                inline: true 
+            },
+            { 
+                name: '**Highest Role**', 
+                value: `${interaction.member.roles.highest}`, 
+                inline: true 
+            },
+            { 
+                name: '**Server**', 
+                value: `\`${interaction.member.guild.name}\``, 
+                inline: true 
+            },
+            
         )            
+        .setFooter(`Coded By Debonair_T`, 'https://cdn.discordapp.com/avatars/323437785015123980/fc0c51ca99769bd2e6c5574597bbdff4.webp')
         .setTimestamp();
     
 
