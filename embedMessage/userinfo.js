@@ -49,7 +49,7 @@ const myInfo = (data) => {
             },
             { 
                 name: `**Các chức vụ khác**`, 
-                value: `${roles}`, 
+                value: `${roles.length == 0 ? data.roles.highest : roles}`, 
                 inline: false 
             },
             
