@@ -2,6 +2,7 @@
 const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
 const myInfo = (interaction) => {
+    console.log(interaction.presences);
     const userinfo = new MessageEmbed()
         .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true, size: 512 }))  
         .setColor('#0099ff')
@@ -31,8 +32,8 @@ const myInfo = (interaction) => {
                 inline: true 
             },
             { 
-                name: '**Trạng thái**', 
-                value: `\`${interaction.member.user.presence}\``, 
+                name: '**Mã mật danh**', 
+                value: `\`${interaction.user.discriminator}\``, 
                 inline: true 
             },
             { 
@@ -84,8 +85,8 @@ const friendInfo = (interaction) => {
                 inline: true 
             },
             { 
-                name: '**Trạng thái**', 
-                value: `\`${member.user.presence}\``, 
+                name: '**Mã mật danh**', 
+                value: `\`${member.user.discriminator}\``, 
                 inline: true 
             },
             { 
