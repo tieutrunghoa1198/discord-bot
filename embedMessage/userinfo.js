@@ -17,7 +17,7 @@ const myInfo = (interaction) => {
         .addFields(
             { 
                 name: '**Mật danh**', 
-                value: `\`${interaction.member.nickname == null ? 'None' : interaction.member.nickname}\``, 
+                value: `\`${interaction.member.nickname == null ? 'Đã đặt đâu mà có?' : interaction.member.nickname}\``, 
                 inline: true 
             },
             { 
@@ -76,7 +76,7 @@ const friendInfo = (interaction) => {
         .addFields(
             { 
                 name: '**Mật danh**', 
-                value: `\`${member.nickname == null ? 'None' : member.nickname}\``, 
+                value: `\`${member.nickname == null ? 'Đã đặt đâu mà có?' : member.nickname}\``, 
                 inline: true 
             },
             { 
