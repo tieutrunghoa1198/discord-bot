@@ -29,7 +29,7 @@ const myInfo = (data) => {
             },
             { 
                 name: '**Ảnh CMT**', 
-                value: `[\`Link to avatar\`](${data.user.displayAvatarURL({ dynamic: true })})`, 
+                value: `[\`Link to avatar\`](${data.user.displayAvatarURL({ dynamic: true, size: 512 })})`, 
                 inline: true 
             },
             { 
