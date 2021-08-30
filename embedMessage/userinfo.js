@@ -2,7 +2,11 @@
 const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
 const myInfo = (interaction) => {
-    console.log(interaction.presences);
+    // console.log(interaction.member.roles.cache);
+    const roles = interaction.member.roles.cache
+        .sort((a,b) => b.position - a.position)
+        .map(role => role.toString())
+        .slice(0,-1);
     const userinfo = new MessageEmbed()
         .setThumbnail(interaction.user.displayAvatarURL({ dynamic: true, size: 512 }))  
         .setColor('#0099ff')
@@ -32,8 +36,8 @@ const myInfo = (interaction) => {
                 inline: true 
             },
             { 
-                name: '**Mã mật danh**', 
-                value: `\`${interaction.user.discriminator}\``, 
+                name: '**Công ty**', 
+                value: `\`${interaction.member.guild.name}\``, 
                 inline: true 
             },
             { 
@@ -42,9 +46,9 @@ const myInfo = (interaction) => {
                 inline: true 
             },
             { 
-                name: '**Công ty**', 
-                value: `\`${interaction.member.guild.name}\``, 
-                inline: true 
+                name: `**Các chức vụ khác**`, 
+                value: `${roles}`, 
+                inline: false 
             },
             
         )            
@@ -55,6 +59,12 @@ const myInfo = (interaction) => {
 
 const friendInfo = (interaction) => {
     const member = interaction.options.getMember('user');
+    console.log(member.roles.cache);
+    const roles = member.roles.cache
+        .sort((a,b) => b.position - a.position)
+        .map(role => role.toString())
+        .slice(0,-1);
+
     const userinfo = new MessageEmbed()
         .setThumbnail(member.user.displayAvatarURL({ dynamic: true, size: 512 }))  
         .setColor('#0099ff')
@@ -85,8 +95,8 @@ const friendInfo = (interaction) => {
                 inline: true 
             },
             { 
-                name: '**Mã mật danh**', 
-                value: `\`${member.user.discriminator}\``, 
+                name: '**Công ty**', 
+                value: `\`${member.guild.name}\``, 
                 inline: true 
             },
             { 
@@ -95,9 +105,9 @@ const friendInfo = (interaction) => {
                 inline: true 
             },
             { 
-                name: '**Công ty**', 
-                value: `\`${member.guild.name}\``, 
-                inline: true 
+                name: `**Các chức vụ khác**`, 
+                value: `${roles.length == 0 ? member.roles.highest : roles}`, 
+                inline: false 
             },
             
         )            
