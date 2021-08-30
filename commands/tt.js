@@ -8,10 +8,12 @@ module.exports = {
   async execute(interaction) {
       // console.log(interaction);
       if(interaction.options.getMember('user') == null) {
-        await interaction.reply({ embeds: [msg.myInfo(interaction)] });  
+        const data = interaction.member;
+        await interaction.reply({ embeds: [msg.myInfo(data)] });  
       } 
       else {
-        await interaction.reply({ embeds: [msg.friendInfo(interaction)] });  
+        const data = interaction.options.getMember('user');
+        await interaction.reply({ embeds: [msg.myInfo(data)] });  
       }
       
     },
