@@ -16,7 +16,12 @@ const messageHandler = msg => {
         console.log(err);
       } 
       else if (data.length === 0) {
-        msg.delete();
+        try {
+          msg.delete();
+        } 
+        catch (error) {
+          console.log(error);
+        }
       }
     });
   });

@@ -1,5 +1,5 @@
 require('dotenv').config();
-const TOKEN = process.env.TOKEN;
+const TOKEN = process.env.LOCALTOKEN || process.env.TOKEN;
 const uri = process.env.uri;
 
 const { messageHandler } = require('./handlers/messageHandler.js');
@@ -17,6 +17,8 @@ mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connection.on('error', err => {
   console.log(err);
 });
+
+global.distube = 'asd';
 
 client.commands = new Collection();
 
