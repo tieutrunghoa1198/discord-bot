@@ -1,6 +1,6 @@
 const channels = require('../models/Channel.js');
 
-const messageHandler = msg => {
+const messageHandler = async (msg) => {
   const id = msg.channelId;
   const authorId = msg.author.id;
 
