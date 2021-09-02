@@ -23,14 +23,12 @@ const messageHandler = async msg => {
 
     // if channel is found, then search for allowed users by authorId and channelId.
     channels.find({ channelId: id, permittedUsers: authorId }, function(err, data) {
-      console.log(msg);
-      if (err) {
-        console.log(err);
-      } 
-      else if (data.length === 0) {
-        deleteMsg(msg)
-          .then(() => console.log('cool'))
-          .catch(err => console.log(err));
+      if(!msg.deleted) {
+        msg.delete();
+        console.log('test');
+      }
+      else {
+        console.log('not cool');
       }
     });
   });
