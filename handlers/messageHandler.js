@@ -12,7 +12,7 @@ function deleteMsg(msg) {
   });
 }
 
-const message = async msg => {
+const messageHandler = async msg => {
   const id = msg.channelId;
   const authorId = msg.author.id;
   channels.find({ channelId: id }, function(err, channel) {
