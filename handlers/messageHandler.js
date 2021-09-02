@@ -3,7 +3,7 @@ const channels = require('../models/Channel.js');
 function deleteMsg(msg) {
   return new Promise((resolve, reject) => {
     if(msg.content) {
-      msg.delete();
+      msg.delete(1500);
       resolve('Finish Delete!');
     }
     else {
