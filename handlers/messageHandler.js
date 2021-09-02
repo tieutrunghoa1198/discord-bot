@@ -1,9 +1,20 @@
 const channels = require('../models/Channel.js');
 
-const messageHandler = async (msg) => {
+function deleteMsg(msg) {
+  return new Promise((resolve, reject) => {
+    if(msg.content) {
+      msg.delete();
+      resolve('Finish Delete!');
+    }
+    else {
+      reject('There\'s some errors here');
+    }
+  });
+}
+
+const message = async msg => {
   const id = msg.channelId;
   const authorId = msg.author.id;
-
   channels.find({ channelId: id }, function(err, channel) {
     // if channel not found => do nothing
     if (channel.length === 0) {
@@ -12,16 +23,14 @@ const messageHandler = async (msg) => {
 
     // if channel is found, then search for allowed users by authorId and channelId.
     channels.find({ channelId: id, permittedUsers: authorId }, function(err, data) {
+      console.log(msg);
       if (err) {
         console.log(err);
       } 
       else if (data.length === 0) {
-        try {
-          msg.delete();
-        } 
-        catch (error) {
-          console.log(error);
-        }
+        deleteMsg(msg)
+          .then(() => console.log('cool'))
+          .catch(err => console.log(err));
       }
     });
   });
