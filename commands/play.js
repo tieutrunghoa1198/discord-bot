@@ -1,12 +1,36 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { Permissions } = require('discord.js');
 const ytdl = require('ytdl-core');
-const { joinVoiceChannel, createAudioPlayer, StreamType, createAudioResource } = require('@discordjs/voice');
+const { joinVoiceChannel, StreamType, createAudioResource } = require('@discordjs/voice');
 
-const { NoSubscriberBehavior } = require('@discordjs/voice');
+// const { NoSubscriberBehavior } = require('@discordjs/voice');
 
-function test() {
-  return;
+// function test() {
+//   return;
+// }
+
+async function initiateMusic(interaction, client) {
+  const guild = client.guilds.cache.get(interaction.guildId);
+  const member = guild.members.cache.get(interaction.member.user.id);
+  const voiceChannel = member.voice.channel;
+  const player = client.player;
+  const link = interaction.options.getString('link');
+  const info = await ytdl.getInfo(link);
+  const format = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
+  // if users have not connected to a voice channel yet, tell em
+  if(!voiceChannel) {
+    await interaction.reply('Please connect to a voice channel.');
+    return;
+  }
+
+  const connection = joinVoiceChannel({
+      channelId: voiceChannel.id,
+      guildId: interaction.guildId,
+      adapterCreator: guild.voiceAdapterCreator,
+  });
+
+  const resource = createAudioResource(format.url, { inputType: StreamType.Arbitrary });
+  player.play(resource);
+  connection.subscribe(player);
 }
 
 module.exports = {
@@ -15,11 +39,11 @@ module.exports = {
     .setDescription('Play music!')
     .addStringOption(option => option.setName('link').setDescription('Enter a link')),
   async execute(interaction, client) {
-    console.log(interaction.member);
-    // const guild = client.guilds.cache.get(interaction.guild_id);
-    // const member = guild.members.cache.get(interaction.member.user.id);
-    // const voiceChannel = member.voice.channel;
-    // const link = interaction.options.getString('link');
+    // get channel id and voice channel if connected
+    initiateMusic(interaction, client);
+    
+    // then play a list using a link
+    
     // const guild = client.guilds.cache.get(interaction.guildId);
     // const member = guild.members.cache.get(interaction.user.id);
     // const voiceChannel = member.voice.channel;

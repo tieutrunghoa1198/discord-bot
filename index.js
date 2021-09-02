@@ -21,6 +21,10 @@ entity.mongodb.dbConnect(mongoose);
 entity.commands.load(client);
 client.player = player;
 
+player.on('stateChange', (oldState, newState) => {
+	console.log(`Audio player transitioned from ${oldState.status} to ${newState.status}`);
+});
+
 // commands handler
 client.on('interactionCreate', async interaction => {
 	handler.command(interaction, client);
