@@ -2,4 +2,3 @@ node_modules/
 scripts/
 .vscode
 .env
-commands/
