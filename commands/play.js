@@ -20,9 +20,8 @@ async function initiateMusic(interaction, client) {
         },
       },
     },
-    );
+  );
   const format = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
-  // QUFFLUhqbnBSVXN2S1BmVjZvN0lRTXNYR1Y5U1VOMnJ2UXw=
   // if users have not connected to a voice channel yet, tell em
   if(await !voiceChannel) {
     await interaction.reply('Please connect to a voice channel.');
