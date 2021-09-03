@@ -1,12 +1,7 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const ytdl = require('ytdl-core');
 const { joinVoiceChannel, StreamType, createAudioResource } = require('@discordjs/voice');
-
 // const { NoSubscriberBehavior } = require('@discordjs/voice');
-
-// function test() {
-//   return;
-// }
 
 async function initiateMusic(interaction, client) {
   const guild = client.guilds.cache.get(interaction.guildId);
@@ -17,7 +12,7 @@ async function initiateMusic(interaction, client) {
   const info = await ytdl.getInfo(link);
   const format = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
   // if users have not connected to a voice channel yet, tell em
-  if(!voiceChannel) {
+  if(await !voiceChannel) {
     await interaction.reply('Please connect to a voice channel.');
     return;
   }
@@ -31,6 +26,7 @@ async function initiateMusic(interaction, client) {
   const resource = createAudioResource(format.url, { inputType: StreamType.Arbitrary });
   player.play(resource);
   connection.subscribe(player);
+  await interaction.reply('Music is now playing!');
 }
 
 module.exports = {
@@ -39,9 +35,23 @@ module.exports = {
     .setDescription('Play music!')
     .addStringOption(option => option.setName('link').setDescription('Enter a link')),
   async execute(interaction, client) {
+    const link = interaction.options.getString('link');
+
+    // if that if the input data is a accepted url
+    if(!ytdl.validateURL(link)) {
+      await interaction.reply('Please enter a youtube link or a search term.');
+      return;
+    }
+
     // get channel id and voice channel if connected
-    initiateMusic(interaction, client);
+    await initiateMusic(interaction, client);
     
+
+    /*
+        keep doing with unpause function 
+        then create a queue to play the next song in current queue
+    */ 
+  
     // then play a list using a link
     
     // const guild = client.guilds.cache.get(interaction.guildId);
@@ -78,6 +88,6 @@ module.exports = {
     //     console.log(`Audio player transitioned from ${oldState.status} to ${newState}`);
     // });
     // console.log('Format found!', format);
-      await interaction.reply('Lo cmm lo!');
+      
     },
 };
