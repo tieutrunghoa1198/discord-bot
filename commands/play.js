@@ -2,7 +2,6 @@ require('dotenv').config();
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const ytdl = require('ytdl-core');
 const { joinVoiceChannel, StreamType, createAudioResource } = require('@discordjs/voice');
-// const { NoSubscriberBehavior } = require('@discordjs/voice');
 
 async function initiateMusic(interaction, client) {
   const guild = client.guilds.cache.get(interaction.guildId);
@@ -34,7 +33,7 @@ async function initiateMusic(interaction, client) {
     adapterCreator: guild.voiceAdapterCreator,
   });
 
-  const resource = createAudioResource(format.url, { inputType: StreamType.Arbitrary });
+  const resource = createAudioResource(format.url, { inputType: StreamType.WebmOpus });
   player.play(resource);
   connection.subscribe(player);
   await interaction.reply('Music is now playing!');

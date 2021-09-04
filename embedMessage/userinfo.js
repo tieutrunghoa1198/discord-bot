@@ -2,8 +2,6 @@
 const { MessageEmbed } = require('discord.js');
 const moment = require('moment');
 const myInfo = (data) => {
-    // console.log(interaction.member.roles.cache);
-    // const data = interaction.member;
     const roles = data.roles.cache
         .sort((a,b) => b.position - a.position)
         .map(role => role.toString())
