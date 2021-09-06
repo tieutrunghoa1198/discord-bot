@@ -1,7 +1,23 @@
 require('dotenv').config();
 const { SlashCommandBuilder } = require('@discordjs/builders');
 const ytdl = require('ytdl-core');
+const ytsr = require('ytsr');
+const embed = require('../embedMessage/index.js');
 const { joinVoiceChannel, StreamType, createAudioResource } = require('@discordjs/voice');
+
+async function playWithSearchResult(interaction) {
+  
+  const link = interaction.options.getString('link');
+  const items = await ytsr(link, { limit: 5 })
+    .then(data => {
+        const searchRs = data.items.filter(item => item.type == 'video');
+        return searchRs;
+    });
+    console.log((await items).length);
+    console.log(await interaction);
+    await interaction.editReply({ embeds: [embed.searchResult.msg(items)] });
+
+}
 
 async function initiateMusic(interaction, client) {
   const guild = client.guilds.cache.get(interaction.guildId);
@@ -23,7 +39,7 @@ async function initiateMusic(interaction, client) {
   const format = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
   // if users have not connected to a voice channel yet, tell em
   if(await !voiceChannel) {
-    await interaction.reply('Please connect to a voice channel.');
+    await interaction.editReply('Please connect to a voice channel.');
     return;
   }
 
@@ -36,7 +52,7 @@ async function initiateMusic(interaction, client) {
   const resource = createAudioResource(format.url, { inputType: StreamType.WebmOpus });
   player.play(resource);
   connection.subscribe(player);
-  await interaction.reply('Music is now playing!');
+  await interaction.editReply('Music is now playing!');
 }
 
 module.exports = {
@@ -45,13 +61,19 @@ module.exports = {
     .setDescription('Play music!')
     .addStringOption(option => option.setName('link').setDescription('Enter a link')),
   async execute(interaction, client) {
+    await interaction.deferReply();
     const link = interaction.options.getString('link');
     // if that if the input data is a accepted url
-    if(!ytdl.validateURL(link)) {
-      await interaction.reply('Please enter a youtube link or a search term.');
+    if(ytdl.validateURL(link)) {
+      await initiateMusic(interaction, client);
       return;
     }
+    else {
+
+      await playWithSearchResult(interaction);
+    }
+    
     // get channel id and voice channel if connected
-    await initiateMusic(interaction, client);
-    },
+    
+  },
 };
