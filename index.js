@@ -33,7 +33,7 @@ client.on('interactionCreate', async interaction => {
 
 // delete message in specified channels
 client.on('messageCreate', msg => {
-	handler.message(msg);
+	handler.message(msg, client);
 });
 
 // bot is ready to use!!
