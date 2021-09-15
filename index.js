@@ -28,7 +28,12 @@ player.on('stateChange', (oldState, newState) => {
 
 // commands handler
 client.on('interactionCreate', async interaction => {
-	handler.command(interaction, client);
+	try {
+		handler.command(interaction, client);
+	} 
+	catch (error) {
+		console.log(error);
+	}
 });
 
 // delete message in specified channels
