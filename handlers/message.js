@@ -3,6 +3,11 @@ const channels = require('../models/Channel.js');
 const message = async (msg) => {
   const id = msg.channelId;
   
+  if(msg.content.startsWith(';;') && !msg.deleted) {
+    await msg.delete();     
+    console.log(msg.deleted);
+  }
+
   channels.find({ channelId: id }, async function(err, data) {
     // if there is no data for filtering
     if(data.length === 0) {
