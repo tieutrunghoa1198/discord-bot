@@ -33,7 +33,12 @@ client.on('interactionCreate', async interaction => {
 
 // delete message in specified channels
 client.on('messageCreate', msg => {
-	handler.message(msg, client);
+	try {
+		handler.message(msg, client);
+	} 
+	catch (error) {
+		console.log(error);
+	}
 });
 
 // bot is ready to use!!
