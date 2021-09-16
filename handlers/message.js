@@ -10,7 +10,7 @@ const message = async (msg) => {
 
   channels.find({ channelId: id }, async function(err, data) {
     // if there is no data for filtering
-    if(data.length === 0) {
+    if(data.length === 0 || data.length === undefined) {
       return;
     }
 
