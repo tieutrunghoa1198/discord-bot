@@ -22,8 +22,18 @@ entity.mongodb.dbConnect(mongoose);
 entity.commands.load(client);
 client.player = player;
 
+
+player.on('error', error => {
+	console.error(error);
+});
+
+
 player.on(AudioPlayerStatus.Idle, () => {
 	player.unpause();
+});
+
+player.on(AudioPlayerStatus.Playing, () => {
+	console.log('test');
 });
 
 // listen to state change
