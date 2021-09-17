@@ -10,6 +10,11 @@ const message = async (msg) => {
 
   channels.find({ channelId: id }, async function(err, data) {
     // if there is no data for filtering
+    if(err) {
+      console.log(err);
+      return;
+    }
+
     if(data.length === 0 || data.length === undefined) {
       return;
     }
@@ -19,9 +24,9 @@ const message = async (msg) => {
       return;
     }
     else if (!msg.deleted) {
-        await msg.delete();     
-        console.log(msg.deleted);
-      }
+      await msg.delete();     
+      console.log(msg.deleted);
+    }
   });
 };
 

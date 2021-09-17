@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const entity = require('./entities/entity.js');
 const handler = require('./handlers/index.js');
 const player = createAudioPlayer();
+const { AudioPlayerStatus } = require('@discordjs/voice');
 const client = new Client(
 	{ 
 		intents: 
@@ -20,6 +21,10 @@ const client = new Client(
 entity.mongodb.dbConnect(mongoose);
 entity.commands.load(client);
 client.player = player;
+
+player.on(AudioPlayerStatus.Idle, () => {
+	player.unpause();
+});
 
 // listen to state change
 player.on('stateChange', (oldState, newState) => {
