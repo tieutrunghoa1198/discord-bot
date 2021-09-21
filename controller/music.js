@@ -135,6 +135,7 @@ async function initiate(interaction, client) {
     if(link.includes('&list=RD') && link.startsWith('http')) {
       console.log('Play with random list');
       await playList(voiceChannel, client, link);
+      await interaction.editReply('Playing a random list');
     }
     // play by search term 
     else {
