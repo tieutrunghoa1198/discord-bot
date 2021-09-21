@@ -4,10 +4,9 @@ const music = require('../controller/music.js');
 // export slash command 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('play')
-    .setDescription('Play music!')
-    .addStringOption(option => option.setName('link').setDescription('Enter a link')),
+    .setName('skip')
+    .setDescription('Bỏ qua bài hiện tại.'),
   async execute(interaction, client) {
-    await music.main(interaction, client);
+    await music.skip(interaction, client);
   },
 };

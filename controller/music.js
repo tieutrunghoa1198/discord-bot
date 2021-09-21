@@ -85,7 +85,18 @@ async function main(interaction, client) {
     const link = interaction.options.getString('link');
     let serverQueue = null;
     let connection = getVoiceConnection(interaction.guildId);
-    client.guildId = voiceChannel.guild.id;
+    
+    if(!voiceChannel) {
+        await interaction.editReply('Please connect to a voice channel.');
+        return;
+    }
+    else { 
+        connection = await join(voiceChannel);
+        connection.subscribe(client.player);
+        serverQueue = client.queue.get(voiceChannel.guild.id);
+        client.guildId = voiceChannel.guild.id;
+    }
+
     if(input.length === 0) {
         console.log(interaction);
         await interaction.editReply('no param');
@@ -93,15 +104,7 @@ async function main(interaction, client) {
     }
 
     // if users have not connected to a voice channel yet, tell 'em 
-    if(!voiceChannel) {
-      await interaction.editReply('Please connect to a voice channel.');
-      return;
-    }
-    else { 
-      connection = await join(voiceChannel);
-      connection.subscribe(client.player);
-      serverQueue = client.queue.get(voiceChannel.guild.id);
-    }
+    
 
     if(!serverQueue) {
       const queueConstruct = {
@@ -146,8 +149,25 @@ async function main(interaction, client) {
     }
 }
 
+async function skip(interaction, client) {
+    if(client.guildId === '') {
+        await interaction.reply('Không có bài nào cả!');
+		return;
+	}
+	const guildId = client.guildId;
+	const serverQueue = client.queue.get(guildId);
+	if(serverQueue.songs.length == 0) {
+        await interaction.reply('Hết bài rồi!');
+		return;
+	}
+	playOne(client, serverQueue.songs.shift().url);
+    await interaction.reply('Skipped!');
+    return;
+}
+
 module.exports = {
     playOne,
     playWithSearchResult,
     main,
+    skip,
 };
