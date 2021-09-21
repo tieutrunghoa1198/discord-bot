@@ -17,6 +17,5 @@ module.exports = {
         const data = interaction.options.getMember('user');
         await interaction.reply({ embeds: [msg.myInfo(data)] });  
       }
-      
     },
 };

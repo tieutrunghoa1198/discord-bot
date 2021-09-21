@@ -8,6 +8,7 @@ const handler = require('./handlers/index.js');
 const player = createAudioPlayer();
 const { AudioPlayerStatus } = require('@discordjs/voice');
 const queue = new Map();
+const music = require('./controller/music.js');
 const client = new Client(
 	{ 
 		intents: 
@@ -23,14 +24,19 @@ entity.mongodb.dbConnect(mongoose);
 entity.commands.load(client);
 client.player = player;
 client.queue = queue;
-
+client.guildId = '';
 player.on('error', error => {
 	console.error(error);
 });
 
 
 player.on(AudioPlayerStatus.Idle, () => {
-	player.unpause();
+	if(client.guildId === '') {
+		return;
+	}
+	const guildId = client.guildId;
+	const serverQueue = client.queue.get(guildId);
+	music.playOne(client, serverQueue.songs.shift().url);
 });
 
 player.on(AudioPlayerStatus.Playing, () => {

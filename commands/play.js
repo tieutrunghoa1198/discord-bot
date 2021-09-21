@@ -9,6 +9,6 @@ module.exports = {
     .addStringOption(option => option.setName('link').setDescription('Enter a link'))
     .addStringOption(option => option.setName('search').setDescription('Enter a search term')),
   async execute(interaction, client) {
-    music.initiate(interaction, client);
+    await music.initiate(interaction, client);
   },
 };

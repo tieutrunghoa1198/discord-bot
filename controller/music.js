@@ -49,13 +49,15 @@ async function playOne(client, link) {
 }
 
 // Play with random playlist (RD)
-async function playList(client, link) {
+async function playList(voiceChannel, client, link) {
     const videoId = ytdl.getURLVideoID(link);
     const mixPlaylist = ytmpl(videoId);
+    const serverQueue = client.queue.get(voiceChannel.guild.id);
     await mixPlaylist.then(data => {
-        client.queue = data;
+        serverQueue.songs = data.items;
+        console.log(serverQueue.songs);
     });
-    await playOne(client, client.queue.items[0].url);
+    await playOne(client, serverQueue.songs.shift().url);
     return;
 }
   
@@ -83,9 +85,11 @@ async function initiate(interaction, client) {
     const link = interaction.options.getString('link');
     let serverQueue = null;
     let connection = getVoiceConnection(interaction.guildId);
+    client.guildId = voiceChannel.guild.id;
     if(input.length === 0) {
-      await interaction.editReply('no param');
-      return;
+        console.log(interaction);
+        await interaction.editReply('no param');
+        return;
     }
 
     // if users have not connected to a voice channel yet, tell 'em 
@@ -130,7 +134,7 @@ async function initiate(interaction, client) {
     // play random list
     if(link.includes('&list=RD') && link.startsWith('http')) {
       console.log('Play with random list');
-      await playList(client, link);
+      await playList(voiceChannel, client, link);
     }
     // play by search term 
     else {
@@ -142,6 +146,7 @@ async function initiate(interaction, client) {
 }
 
 module.exports = {
+    playOne,
     playWithSearchResult,
     initiate,
 };
