@@ -75,7 +75,7 @@ async function playWithSearchResult(interaction) {
     await interaction.editReply({ embeds: [embed.searchResult.msg(items)] });
 }
 
-async function initiate(interaction, client) {
+async function main(interaction, client) {
     // wait for the processing by using defer reply  
     await interaction.deferReply();
     
@@ -149,5 +149,5 @@ async function initiate(interaction, client) {
 module.exports = {
     playOne,
     playWithSearchResult,
-    initiate,
+    main,
 };

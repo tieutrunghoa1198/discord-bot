@@ -36,6 +36,9 @@ player.on(AudioPlayerStatus.Idle, () => {
 	}
 	const guildId = client.guildId;
 	const serverQueue = client.queue.get(guildId);
+	if(serverQueue.songs.length == 0) {
+		return;
+	}
 	music.playOne(client, serverQueue.songs.shift().url);
 });
 
