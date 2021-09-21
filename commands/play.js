@@ -1,89 +1,81 @@
 require('dotenv').config();
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const ytdl = require('ytdl-core');
-const ytsr = require('ytsr');
+const music = require('../controller/music.js');
 const playDL = require('play-dl');
-const embed = require('../embedMessage/index.js');
-const { joinVoiceChannel, StreamType, createAudioResource } = require('@discordjs/voice');
-
-async function playWithSearchResult(interaction) {
-  
-  const link = interaction.options.getString('link');
-  const items = await ytsr(link, { limit: 5 })
-    .then(data => {
-        const searchRs = data.items.filter(item => item.type == 'video');
-        return searchRs;
-    });
-    console.log((await items).length);
-    console.log(await interaction);
-    await interaction.editReply({ embeds: [embed.searchResult.msg(items)] });
-
-}
-
-async function initiateMusic(interaction, client) {
-  const guild = client.guilds.cache.get(interaction.guildId);
-  const member = guild.members.cache.get(interaction.member.user.id);
-  const voiceChannel = member.voice.channel;
-  const player = client.player;
-  const link = interaction.options.getString('link');
-  const info = await ytdl.getInfo(
-    link, 
-    {
-      requestOptions: {
-        headers: {
-          cookie: process.env.COOKIE,
-          'x-youtube-identity-token': process.env.YTTK,
-        },
-      },
-    },
-  );
-  const format = ytdl.chooseFormat(info.formats, { quality: 'highestaudio' });
-  // if users have not connected to a voice channel yet, tell em
-  if(await !voiceChannel) {
-    await interaction.editReply('Please connect to a voice channel.');
-    return;
-  }
-
-  const source = await playDL.stream(link);
-  const resource = createAudioResource(source.stream, {
-             inputType : source.type,
-         }); 
-         // This creates resource for playing
-
-  const connection = joinVoiceChannel({
-    channelId: voiceChannel.id,
-    guildId: interaction.guildId,
-    adapterCreator: guild.voiceAdapterCreator,
-  });
-  
-  console.log(format.url);
-  // const resource = createAudioResource(format.url, { inputType: StreamType.WebmOpus });
-
-  console.log(resource);
-  player.play(resource);
-  connection.subscribe(player);
-  await interaction.editReply('Music is now playing!');
-}
-
+const { getVoiceConnection } = require('@discordjs/voice');
+// export slash command 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('play')
     .setDescription('Play music!')
-    .addStringOption(option => option.setName('link').setDescription('Enter a link')),
+    .addStringOption(option => option.setName('link').setDescription('Enter a link'))
+    .addStringOption(option => option.setName('search').setDescription('Enter a search term')),
   async execute(interaction, client) {
+
+    // wait for the processing by using defer reply  
     await interaction.deferReply();
+    
+    // check that there is no param from users 
+    const input = interaction.options._hoistedOptions;
+    const voiceChannel = interaction.member.voice.channel;
     const link = interaction.options.getString('link');
-    // if that if the input data is a accepted url
-    if(ytdl.validateURL(link)) {
-      await initiateMusic(interaction, client);
+    const serverQueue = client.queue.get(voiceChannel.guild.id);
+    let connection = getVoiceConnection(interaction.guildId);
+    if(input.length === 0) {
+      await interaction.editReply('no param');
       return;
     }
-    else {
+    
+    if(!serverQueue) {
+      const queueConstruct = {
+          voiceChannel: voiceChannel,
+          connection: connection,
+          songs: [],
+          volume: 5,
+          playing: true,
+          loop: false,
+          autoPlay: false,
+      };
+      client.queue.set(voiceChannel.guild.id, queueConstruct);
+  }
 
-      await playWithSearchResult(interaction);
+    // if users have not connected to a voice channel yet, tell 'em 
+    if(!voiceChannel) {
+      await interaction.editReply('Please connect to a voice channel.');
+      return;
+    }
+    else { 
+      connection = await music.join(voiceChannel);
+      connection.subscribe(client.player);
+    }
+
+    // if input is a watch URL 
+    if(playDL.yt_validate(link) === 'video') {
+      console.log('Play by 1 link');
+      await music.playOne(client, link);
+      await interaction.editReply('Music is now playing!');
+      return;
     }
     
-    // get channel id and voice channel if connected
-    
+    // if input is a playlist URL 
+    if(playDL.yt_validate(link) === 'playlist') {
+      console.log('Play by playlist');
+      await interaction.editReply('Not supported yet!');
+      return;
+    }
+
+    // play random list
+    if(link.includes('&list=RD') && link.startsWith('http')) {
+      console.log('Play with random list');
+      await music.playList(client, link);
+    }
+    // play by search term 
+    else {
+    // playWithSearchResult(interaction);
+      console.log('Play with search term');
+      console.log(link);
+      await interaction.editReply(link);
+    }
+
   },
 };

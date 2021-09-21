@@ -7,6 +7,7 @@ const entity = require('./entities/entity.js');
 const handler = require('./handlers/index.js');
 const player = createAudioPlayer();
 const { AudioPlayerStatus } = require('@discordjs/voice');
+const queue = new Map();
 const client = new Client(
 	{ 
 		intents: 
@@ -21,7 +22,7 @@ const client = new Client(
 entity.mongodb.dbConnect(mongoose);
 entity.commands.load(client);
 client.player = player;
-
+client.queue = queue;
 
 player.on('error', error => {
 	console.error(error);
