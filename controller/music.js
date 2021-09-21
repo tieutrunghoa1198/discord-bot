@@ -2,7 +2,7 @@ const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const playDL = require('play-dl');
 const ytmpl = require('yt-mix-playlist');
-const { joinVoiceChannel, createAudioResource } = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioResource, getVoiceConnection } = require('@discordjs/voice');
 const embed = require('../embedMessage/index.js');
 
 // Format Youtube URL 
@@ -73,9 +73,75 @@ async function playWithSearchResult(interaction) {
     await interaction.editReply({ embeds: [embed.searchResult.msg(items)] });
 }
 
+async function initiate(interaction, client) {
+    // wait for the processing by using defer reply  
+    await interaction.deferReply();
+    
+    // check that there is no param from users 
+    const input = interaction.options._hoistedOptions;
+    const voiceChannel = interaction.member.voice.channel;
+    const link = interaction.options.getString('link');
+    let serverQueue = null;
+    let connection = getVoiceConnection(interaction.guildId);
+    if(input.length === 0) {
+      await interaction.editReply('no param');
+      return;
+    }
+
+    // if users have not connected to a voice channel yet, tell 'em 
+    if(!voiceChannel) {
+      await interaction.editReply('Please connect to a voice channel.');
+      return;
+    }
+    else { 
+      connection = await join(voiceChannel);
+      connection.subscribe(client.player);
+      serverQueue = client.queue.get(voiceChannel.guild.id);
+    }
+
+    if(!serverQueue) {
+      const queueConstruct = {
+          voiceChannel: voiceChannel,
+          connection: connection,
+          songs: [],
+          volume: 5,
+          playing: true,
+          loop: false,
+          autoPlay: false,
+      };
+      client.queue.set(voiceChannel.guild.id, queueConstruct);
+    }
+
+    // if input is a watch URL 
+    if(playDL.yt_validate(link) === 'video') {
+      console.log('Play by 1 link');
+      await playOne(client, link);
+      await interaction.editReply('Music is now playing!');
+      return;
+    }
+    
+    // if input is a playlist URL 
+    if(playDL.yt_validate(link) === 'playlist') {
+      console.log('Play by playlist');
+      await interaction.editReply('Not supported yet!');
+      return;
+    }
+
+    // play random list
+    if(link.includes('&list=RD') && link.startsWith('http')) {
+      console.log('Play with random list');
+      await playList(client, link);
+    }
+    // play by search term 
+    else {
+    // playWithSearchResult(interaction);
+      console.log('Play with search term');
+      console.log(link);
+      await interaction.editReply(link);
+    }
+}
+
 module.exports = {
-    playOne, 
-    playList,
     playWithSearchResult,
-    join,
+    initiate,
 };
