@@ -49,13 +49,13 @@ async function playOne(client, link) {
 }
 
 // Play with random playlist (RD)
-async function playList(player, link, client) {
+async function playList(client, link) {
     const videoId = ytdl.getURLVideoID(link);
     const mixPlaylist = ytmpl(videoId);
     await mixPlaylist.then(data => {
         client.queue = data;
     });
-    await playOne(player, client.queue.items[0].url);
+    await playOne(client, client.queue.items[0].url);
     return;
 }
   

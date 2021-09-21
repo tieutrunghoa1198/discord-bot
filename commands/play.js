@@ -19,13 +19,24 @@ module.exports = {
     const input = interaction.options._hoistedOptions;
     const voiceChannel = interaction.member.voice.channel;
     const link = interaction.options.getString('link');
-    const serverQueue = client.queue.get(voiceChannel.guild.id);
+    let serverQueue = null;
     let connection = getVoiceConnection(interaction.guildId);
     if(input.length === 0) {
       await interaction.editReply('no param');
       return;
     }
-    
+
+    // if users have not connected to a voice channel yet, tell 'em 
+    if(!voiceChannel) {
+      await interaction.editReply('Please connect to a voice channel.');
+      return;
+    }
+    else { 
+      connection = await music.join(voiceChannel);
+      connection.subscribe(client.player);
+      serverQueue = client.queue.get(voiceChannel.guild.id);
+    }
+
     if(!serverQueue) {
       const queueConstruct = {
           voiceChannel: voiceChannel,
@@ -37,16 +48,6 @@ module.exports = {
           autoPlay: false,
       };
       client.queue.set(voiceChannel.guild.id, queueConstruct);
-  }
-
-    // if users have not connected to a voice channel yet, tell 'em 
-    if(!voiceChannel) {
-      await interaction.editReply('Please connect to a voice channel.');
-      return;
-    }
-    else { 
-      connection = await music.join(voiceChannel);
-      connection.subscribe(client.player);
     }
 
     // if input is a watch URL 
