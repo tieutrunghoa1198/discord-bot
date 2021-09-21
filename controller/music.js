@@ -161,13 +161,14 @@ async function skip(interaction, client) {
         await interaction.reply('Không có bài nào cả!');
 		return;
 	}
+    
 	const guildId = client.guildId;
 	const serverQueue = client.queue.get(guildId);
 	if(serverQueue.songs.length == 0) {
         await interaction.reply('Hết bài rồi!');
 		return;
 	}
-	playOne(client, serverQueue.songs.shift().url);
+	await playOne(client, serverQueue.songs.shift().url);
     await interaction.reply('Skipped!');
     return;
 }
