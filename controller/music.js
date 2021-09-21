@@ -150,6 +150,13 @@ async function main(interaction, client) {
 }
 
 async function skip(interaction, client) {
+    const connection = getVoiceConnection(interaction.guildId);
+
+    if(!connection) {
+        await interaction.reply('Làm gì có bài nào mà bỏ??');
+		return;
+    }
+
     if(client.guildId === '') {
         await interaction.reply('Không có bài nào cả!');
 		return;
