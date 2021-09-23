@@ -130,7 +130,7 @@ async function playOne(client, link, serverQueue) {
 }
 
 // Play with random playlist (RD).
-async function playList(voiceChannel, client, link, rt = 5) {
+async function playList(voiceChannel, client, link, rt = 10) {
     if(rt === 0) return;
     const videoId = ytdl.getURLVideoID(link);
     const serverQueue = await client.queue.get(voiceChannel.guild.id);
