@@ -1,14 +1,19 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const pause = async (interaction, client) => {
-  const serverQueue = client.queue.get(interaction.guildId);
-  if(!serverQueue) {
-    await interaction.reply('Please connect to a voice channel.');
-    return;
+  try {
+    const serverQueue = client.queue.get(interaction.guildId);
+    if(!serverQueue) {
+      await interaction.reply('Please connect to a voice channel.');
+      return;
+    }
+    else {
+      serverQueue.player.pause();
+      await interaction.reply('The player is now paused!');
+    }
   }
-  else {
-    serverQueue.player.pause();
-    await interaction.reply('The player is now paused!');
+  catch (error) {
+    console.log(error);  
   }
 };
 
