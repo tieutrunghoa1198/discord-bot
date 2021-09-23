@@ -130,15 +130,16 @@ async function playOne(client, link, serverQueue) {
 }
 
 // Play with random playlist (RD).
-async function playList(voiceChannel, client, link) {
+async function playList(voiceChannel, client, link, rt = 5) {
+    if(rt === 0) return;
     const videoId = ytdl.getURLVideoID(link);
     const serverQueue = await client.queue.get(voiceChannel.guild.id);
-
     // sometimes cant fount a random list [bugs here]
     // eslint-disable-next-line no-unused-vars
-    const mixPlaylist = await ytmpl(videoId).then(async data => {
+    const mixPlaylist = await ytmpl(videoId, { hl: 'en', gl: 'US' }).then(async data => {
         if(!data) {
             console.log('cant found items in random list');
+            playList(voiceChannel, client, link, rt - 1);
             return;
         }
         serverQueue.songs = data.items;
