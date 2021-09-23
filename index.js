@@ -29,21 +29,28 @@ player.on('error', error => {
 	console.error(error);
 });
 
+// Solution solved!!! [Smartest person]
+client.on('test', data => {
+	player.on(AudioPlayerStatus.Idle, () => {
+		console.log(data);
+	});
+});
 
-player.on(AudioPlayerStatus.Idle, () => {
+player.on(AudioPlayerStatus.Idle, (data) => {
 	if(client.guildId === '') {
 		return;
 	}
+	console.log(data.resource.metadata.guildId);
 	const guildId = client.guildId;
 	const serverQueue = client.queue.get(guildId);
-	if(serverQueue.songs.length == 0) {
+	if(!serverQueue) {
+		console.log('new guild');
+		return;
+	}
+	else if(serverQueue.songs.length == 0) {
 		return;
 	}
 	music.playOne(client, serverQueue.songs.shift().url);
-});
-
-player.on(AudioPlayerStatus.Playing, () => {
-	console.log('test');
 });
 
 // listen to state change
