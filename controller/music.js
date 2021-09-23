@@ -2,7 +2,7 @@ const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const playDL = require('play-dl');
 const ytmpl = require('yt-mix-playlist');
-const { joinVoiceChannel, createAudioResource, getVoiceConnection, AudioPlayerStatus } = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioResource, getVoiceConnection } = require('@discordjs/voice');
 const embed = require('../embedMessage/index.js');
 
 // Main Function of Music.
@@ -91,7 +91,6 @@ async function formatURL(rawLink) {
     if(!playDL.validate(rawLink)) {
         console.log(rawLink);
         const videoId = ytdl.getURLVideoID(rawLink);
-        console.log(videoId);
         const youtubeURL = 'https://www.youtube.com/watch?v=';
         formattedLink = youtubeURL + videoId;
     }
@@ -121,42 +120,28 @@ async function playOne(client, link) {
             },
         },
     );
+    
     // create a queue if it not existed.
-
-    /*
-
-        try some solutions with emit method.
-
-    */
-
-    client.emit('test', 'guildid = 123');
+    client.emit('test', client);
     client.player.play(resource);
-    client.player.on(AudioPlayerStatus.Playing, () => {
-        console.log('Playing!');
-    });
 }
 
 // Play with random playlist (RD).
 async function playList(voiceChannel, client, link) {
     const videoId = ytdl.getURLVideoID(link);
-    const mixPlaylist = ytmpl(videoId);
-    const serverQueue = client.queue.get(voiceChannel.guild.id);
-    await mixPlaylist.then(data => {
+    const serverQueue = await client.queue.get(voiceChannel.guild.id);
+    
+    // sometimes cant fount a random list [bugs here]
+    // eslint-disable-next-line no-unused-vars
+    const mixPlaylist = await ytmpl(videoId).then(async data => {
         if(!data) {
             console.log('cant found items in random list');
             return;
         }
         serverQueue.songs = data.items;
+        playOne(client, serverQueue.songs.shift().url);
         console.log(serverQueue.songs);
     });
-    if(serverQueue.songs.length === 0) {
-        console.log('cant found items in random list play');
-    }
-    else {
-        await playOne(client, serverQueue.songs.shift().url);
-    }
-    
-    return;
 }
   
 // [still working]

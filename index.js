@@ -30,27 +30,28 @@ player.on('error', error => {
 });
 
 // Solution solved!!! [Smartest person]
-client.on('test', data => {
-	player.on(AudioPlayerStatus.Idle, () => {
-		console.log(data);
+client.on('test', client2 => {
+	client2.player.on(AudioPlayerStatus.Idle, async (data) => {
+		if(client.guildId === '') {
+			return;
+		}
+		console.log(data.resource.metadata.guildId);
+		const guildId = client.guildId;
+		const serverQueue = client.queue.get(guildId);
+		if(!serverQueue) {
+			console.log('new guild');
+			return;
+		}
+		else if(serverQueue.songs.length == 0) {
+			return;
+		}
+		await music.playOne(client, serverQueue.songs.shift().url);
+		console.log('asd');
 	});
 });
 
-player.on(AudioPlayerStatus.Idle, (data) => {
-	if(client.guildId === '') {
-		return;
-	}
-	console.log(data.resource.metadata.guildId);
-	const guildId = client.guildId;
-	const serverQueue = client.queue.get(guildId);
-	if(!serverQueue) {
-		console.log('new guild');
-		return;
-	}
-	else if(serverQueue.songs.length == 0) {
-		return;
-	}
-	music.playOne(client, serverQueue.songs.shift().url);
+player.on(AudioPlayerStatus.Playing, () => {
+	console.log('Playing!');
 });
 
 // listen to state change
