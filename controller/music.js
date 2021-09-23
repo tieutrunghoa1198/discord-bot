@@ -186,7 +186,7 @@ async function skip(interaction, client) {
 	}
 	await playOne(client, serverQueue.songs.shift().url, serverQueue);
     
-    await interaction.reply('Skipped!'):
+    await interaction.reply('Skipped!');
     return;
 }
 
