@@ -1,14 +1,17 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const stop = async (interaction, client) => {
-    const player = client.player;
-    const voiceChannel = interaction.member.voice.channel;
-    const serverQueue = client.queue.get(voiceChannel.guild.id);
+    const serverQueue = client.queue.get(interaction.guildId);
+    if(!serverQueue) {
+      await interaction.reply('Queue is empty!');
+      return;
+    }
+    else {
+      serverQueue.songs = [];
+      serverQueue.player.stop();
+      await interaction.reply('The player is now empty!');
 
-    serverQueue.songs = [];
-    player.stop();
-    // eslint-disable-next-line no-useless-escape
-    await interaction.reply('The current queue is empty!');
+    }
 };
 
 module.exports = {
@@ -16,6 +19,7 @@ module.exports = {
     .setName('stop')
     .setDescription('Clear the current queue!'),
   async execute(interaction, client) {
-        stop(interaction, client);
+        await stop(interaction, client);
+        return;
     },
 };

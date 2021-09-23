@@ -1,11 +1,9 @@
 require('dotenv').config();
 const TOKEN = process.env.LOCALTOKEN || process.env.TOKEN;
 const { Client, Intents } = require('discord.js');
-const { createAudioPlayer } = require('@discordjs/voice');
 const mongoose = require('mongoose');
 const entity = require('./entities/entity.js');
 const handler = require('./handlers/index.js');
-const player = createAudioPlayer();
 const { AudioPlayerStatus } = require('@discordjs/voice');
 const queue = new Map();
 const music = require('./controller/music.js');
@@ -22,41 +20,37 @@ const client = new Client(
 // initiate db and commands 
 entity.mongodb.dbConnect(mongoose);
 entity.commands.load(client);
-client.player = player;
 client.queue = queue;
-client.guildId = '';
-player.on('error', error => {
-	console.error(error);
-});
+
 
 // Solution solved!!! [Smartest person]
-client.on('test', client2 => {
-	client2.player.on(AudioPlayerStatus.Idle, async (data) => {
-		if(client.guildId === '') {
-			return;
-		}
-		console.log(data.resource.metadata.guildId);
-		const guildId = client.guildId;
-		const serverQueue = client.queue.get(guildId);
-		if(!serverQueue) {
-			console.log('new guild');
-			return;
-		}
-		else if(serverQueue.songs.length == 0) {
-			return;
-		}
-		await music.playOne(client, serverQueue.songs.shift().url);
-		console.log('asd');
-	});
-});
+client.on('test', metadata => {
+	const guildId = metadata.guildId;
+	const serverQueue = metadata.client.queue.get(guildId);
+	
+	if(!serverQueue) {
+		return;
+	}
 
-player.on(AudioPlayerStatus.Playing, () => {
-	console.log('Playing!');
-});
+	if(serverQueue.isNew) {
+		serverQueue.isNew = false;
+		serverQueue.player.on(AudioPlayerStatus.Idle, async (data) => {
+			console.log(data.resource.metadata.guildId);
+			if(serverQueue.songs.length === 0) {
+				return;
+			}
+			await music.playOne(metadata.client, serverQueue.songs.shift().url, serverQueue);
+		});
 
-// listen to state change
-player.on('stateChange', (oldState, newState) => {
-	console.log(`Audio player transitioned from ${oldState.status} to ${newState.status}`);
+		serverQueue.player.on(AudioPlayerStatus.Playing, () => {
+			console.log('Playing!');
+		});
+
+		// listen to state change
+		serverQueue.player.on('stateChange', (oldState, newState) => {
+			console.log(`Audio player transitioned from ${oldState.status} to ${newState.status}`);
+		});
+	}
 });
 
 // commands handler

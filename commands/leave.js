@@ -1,21 +1,23 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { getVoiceConnection } = require('@discordjs/voice');
 
-const leave = async (interaction) => {
-    const connection = getVoiceConnection(interaction.guildId);
-    if(!connection) {
-        await interaction.reply('You\'re not in a voice channel!');    
-        return;
+const leave = async (interaction, client) => {
+    
+    const serverQueue = client.queue.get(interaction.guildId);
+    if(!serverQueue) {
+      await interaction.reply('You\'re not in a voice channel!');    
+      return;
     }
-    connection.destroy();
-    await interaction.reply('I\'m quit!!!');
+    else {
+      serverQueue.connection.destroy();
+      await interaction.reply('Cảm ơn các anh đã nghe. Lần sau alo em nhé!');
+    }
 };
 
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('leave')
     .setDescription('Leave voice channel!'),
-  async execute(interaction) {
-        leave(interaction);
+  async execute(interaction, client) {
+        leave(interaction, client);
     },
 };

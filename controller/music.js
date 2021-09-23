@@ -2,7 +2,7 @@ const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const playDL = require('play-dl');
 const ytmpl = require('yt-mix-playlist');
-const { joinVoiceChannel, createAudioResource, getVoiceConnection } = require('@discordjs/voice');
+const { joinVoiceChannel, createAudioResource, getVoiceConnection, createAudioPlayer } = require('@discordjs/voice');
 const embed = require('../embedMessage/index.js');
 
 // Main Function of Music.
@@ -16,44 +16,41 @@ async function main(interaction, client) {
     const link = interaction.options.getString('link');
     let serverQueue = null;
     let connection = getVoiceConnection(interaction.guildId);
-    
+    const player = createAudioPlayer();
     if(!voiceChannel) {
         await interaction.editReply('Please connect to a voice channel.');
         return;
     }
     else { 
         connection = await join(voiceChannel);
-        connection.subscribe(client.player);
+        if(!serverQueue) {
+            const queueConstruct = {
+                voiceChannel: voiceChannel,
+                connection: connection,
+                player: player,
+                songs: [],
+                volume: 5,
+                playing: true,
+                loop: false,
+                autoPlay: false,
+                isNew: true,
+            };
+            connection.subscribe(player);
+            client.queue.set(voiceChannel.guild.id, queueConstruct);
+        }
         serverQueue = client.queue.get(voiceChannel.guild.id);
-        client.guildId = voiceChannel.guild.id;
     }
 
     if(input.length === 0) {
-        console.log(interaction);
         await interaction.editReply('no param');
         return;
     }
 
-    // if users have not connected to a voice channel yet, tell 'em 
-    
-
-    if(!serverQueue) {
-      const queueConstruct = {
-          voiceChannel: voiceChannel,
-          connection: connection,
-          songs: [],
-          volume: 5,
-          playing: true,
-          loop: false,
-          autoPlay: false,
-      };
-      client.queue.set(voiceChannel.guild.id, queueConstruct);
-    }
-
+    serverQueue = client.queue.get(voiceChannel.guild.id);
     // if input is a watch URL 
     if(playDL.yt_validate(link) === 'video') {
       console.log('Play by 1 link');
-      await playOne(client, link);
+      await playOne(client, link, serverQueue);
       await interaction.editReply('Music is now playing!');
       return;
     }
@@ -108,29 +105,35 @@ async function join(voiceChannel) {
 }
 
 // Play one song.
-async function playOne(client, link) {
+async function playOne(client, link, serverQueue) {
+    if(!link) {
+        return;
+    }
     const youtubeURL = await formatURL(link);
+    const guildId = serverQueue.voiceChannel.guild.id;
     const source = await playDL.stream(youtubeURL);
     const resource = createAudioResource(
         source.stream, 
         {
             inputType : source.type,
             metadata: {
-                guildId: 'test cool function',
+                guildId: guildId,
             },
         },
     );
-    
+    const data = {
+        client, guildId, serverQueue,
+    };
     // create a queue if it not existed.
-    client.emit('test', client);
-    client.player.play(resource);
+    client.emit('test', data);
+    serverQueue.player.play(resource);
 }
 
 // Play with random playlist (RD).
 async function playList(voiceChannel, client, link) {
     const videoId = ytdl.getURLVideoID(link);
     const serverQueue = await client.queue.get(voiceChannel.guild.id);
-    
+
     // sometimes cant fount a random list [bugs here]
     // eslint-disable-next-line no-unused-vars
     const mixPlaylist = await ytmpl(videoId).then(async data => {
@@ -139,8 +142,7 @@ async function playList(voiceChannel, client, link) {
             return;
         }
         serverQueue.songs = data.items;
-        playOne(client, serverQueue.songs.shift().url);
-        console.log(serverQueue.songs);
+        playOne(client, serverQueue.songs.shift().url, serverQueue);
     });
 }
   
@@ -161,24 +163,28 @@ async function playWithSearchResult(interaction) {
 // Remove the current track, then play the next one.
 async function skip(interaction, client) {
     const connection = getVoiceConnection(interaction.guildId);
-
+    const serverQueue = client.queue.get(interaction.guildId);
+    
+    if(!serverQueue) {
+        await interaction.reply('Queue is empty!');
+		return;
+    }
+    
     if(!connection) {
         await interaction.reply('Làm gì có bài nào mà bỏ??');
 		return;
     }
 
-    if(client.guildId === '') {
+    if(serverQueue.songs.length === 0) {
         await interaction.reply('Không có bài nào cả!');
 		return;
 	}
-    
-	const guildId = client.guildId;
-	const serverQueue = client.queue.get(guildId);
+
 	if(serverQueue.songs.length == 0) {
         await interaction.reply('Hết bài rồi!');
 		return;
 	}
-	await playOne(client, serverQueue.songs.shift().url);
+	await playOne(client, serverQueue.songs.shift().url, serverQueue);
     await interaction.reply('Skipped!');
     return;
 }

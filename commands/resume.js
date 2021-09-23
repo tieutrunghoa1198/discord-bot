@@ -1,10 +1,16 @@
 const { SlashCommandBuilder } = require('@discordjs/builders');
 
 const resume = async (interaction, client) => {
-    const player = client.player;
-    player.unpause();
+    const serverQueue = client.queue.get(interaction.guildId);
+    if(!serverQueue) {
+      await interaction.reply('Please connect to a voice channel.');
+      return;
+    }
+    else {
+      serverQueue.player.unpause();
+      await interaction.reply('The player is now resume!');
+    }
     // eslint-disable-next-line no-useless-escape
-    await interaction.reply('The player is now resume!');
 };
 
 module.exports = {
@@ -12,6 +18,6 @@ module.exports = {
     .setName('resume')
     .setDescription('Continue playing current song'),
   async execute(interaction, client) {
-        resume(interaction, client);
+        await resume(interaction, client);
     },
 };
