@@ -142,6 +142,10 @@ async function playList(voiceChannel, client, link) {
     const mixPlaylist = ytmpl(videoId);
     const serverQueue = client.queue.get(voiceChannel.guild.id);
     await mixPlaylist.then(data => {
+        if(data.items.length === 0) {
+            console.log('cant found items in random list');
+            return;
+        }
         serverQueue.songs = data.items;
         console.log(serverQueue.songs);
     });
