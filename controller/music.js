@@ -81,7 +81,7 @@ async function main(interaction, client) {
     }
     /*
         CASE 4: if input is search terms 
-    */ 
+    */
     else {
     // playWithSearchResult(interaction);
       console.log('Play with search term');

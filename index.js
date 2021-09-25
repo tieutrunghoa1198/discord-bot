@@ -55,27 +55,17 @@ client.on('test', metadata => {
 
 // commands handler
 client.on('interactionCreate', async interaction => {
-	try {
 		handler.command(interaction, client);
-	} 
-	catch (error) {
-		console.log(error);
-	}
 });
 
 // delete message in specified channels
 client.on('messageCreate', msg => {
-	try {
-		handler.message(msg, client);
-	} 
-	catch (error) {
-		console.log(error);
-	}
+	handler.message(msg, client);
 });
 
 // bot is ready to use!!
 client.once('ready', () => {
-	client.user.setActivity('weed', { type: 'PLAYING' });
+	client.user.setActivity('/play', { type: 'PLAYING' });
 	console.log(client.user.username);
 });
 
