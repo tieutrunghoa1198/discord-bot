@@ -1,7 +1,8 @@
 const channels = require('../models/Channel.js');
 
 const message = async (msg) => {
-  const id = msg.channelId;
+  try {
+    const id = msg.channelId;
   
   if(msg.content.startsWith(';;') && !msg.deleted) {
     await msg.delete();     
@@ -28,6 +29,10 @@ const message = async (msg) => {
       console.log(msg.deleted);
     }
   });
+  } 
+  catch (error) {
+    console.log(error);
+  }
 };
 
 module.exports = message;
