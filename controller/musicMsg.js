@@ -13,6 +13,7 @@ async function main(msg, client) {
 
         if(!voiceChannel) {
             textChannel.send('Anh vào phòng trước đi.');
+            return;
         }
         else {
             // re organize object properties
