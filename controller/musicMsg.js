@@ -10,11 +10,8 @@ async function main(msg, client) {
         const textChannel = msg.guild.channels.cache.get(msg.channelId);
         let connection = null;
         let serverQueue = client.queue.get(msg.guildId);
-        
-        console.log(msg);
 
         if(!voiceChannel) {
-            console.log('not cool');
             textChannel.send('Anh vào phòng trước đi.');
         }
         else {
