@@ -39,7 +39,7 @@ client.on('test', metadata => {
 			if(serverQueue.songs.length === 0) {
 				return;
 			}
-			await music.playOne(metadata.client, serverQueue.songs.shift().url, serverQueue);
+			await music.playOne(serverQueue, serverQueue.songs.shift().url, metadata.client);
 		});
 
 		serverQueue.player.on(AudioPlayerStatus.Playing, () => {

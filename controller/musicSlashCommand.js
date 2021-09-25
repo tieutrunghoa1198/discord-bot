@@ -136,6 +136,7 @@ async function playOne(serverQueue, link, client) {
         }
         const youtubeURL = await formatURL(link);
         const guildId = serverQueue.voiceChannel.guild.id;
+        console.log(serverQueue);
         const source = await playDL.stream(youtubeURL);
         const resource = createAudioResource(
             source.stream, 
