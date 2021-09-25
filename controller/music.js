@@ -11,82 +11,87 @@ async function main(interaction, client) {
     await interaction.deferReply();
     
     // check that there is no param from users 
-    const input = interaction.options._hoistedOptions;
-    const voiceChannel = interaction.member.voice.channel;
-    const link = interaction.options.getString('link');
-    let serverQueue = null;
-    let connection = getVoiceConnection(interaction.guildId);
-    const player = createAudioPlayer();
+    try {
+        const input = interaction.options._hoistedOptions;
+        const voiceChannel = interaction.member.voice.channel;
+        const link = interaction.options.getString('link');
+        let serverQueue = null;
+        let connection = getVoiceConnection(interaction.guildId);
+        const player = createAudioPlayer();
 
-    // check that voice channel is exist or not.
-    if(!voiceChannel) {
-        await interaction.editReply('Please connect to a voice channel.');
-        return;
-    }
-    else {
-    // re organize object properties
-        connection = await join(voiceChannel);
-        if(!serverQueue) {
-            const queueConstruct = {
-                voiceChannel: voiceChannel,
-                connection: connection,
-                player: player,
-                songs: [],
-                volume: 5,
-                playing: true,
-                loop: false,
-                autoPlay: false,
-                isNew: true,
-            };
-            connection.subscribe(player);
-            client.queue.set(voiceChannel.guild.id, queueConstruct);
+        // check that voice channel is exist or not.
+        if(!voiceChannel) {
+            await interaction.editReply('Please connect to a voice channel.');
+            return;
         }
+        else {
+        // re organize object properties
+            connection = await join(voiceChannel);
+            if(!serverQueue) {
+                const queueConstruct = {
+                    voiceChannel: voiceChannel,
+                    connection: connection,
+                    player: player,
+                    songs: [],
+                    volume: 5,
+                    playing: true,
+                    loop: false,
+                    autoPlay: false,
+                    isNew: true,
+                };
+                connection.subscribe(player);
+                client.queue.set(voiceChannel.guild.id, queueConstruct);
+            }
+            serverQueue = client.queue.get(voiceChannel.guild.id);
+        }
+
+        if(input.length === 0) {
+            await interaction.editReply('no param');
+            return;
+        }
+
+        // get queue from requested server (guild)
         serverQueue = client.queue.get(voiceChannel.guild.id);
-    }
-
-    if(input.length === 0) {
-        await interaction.editReply('no param');
+        
+        /*
+            CASE 1: if input is a watch URL 
+        */ 
+        if(playDL.yt_validate(link) === 'video') {
+        console.log('Play by 1 link');
+        await playOne(client, link, serverQueue);
+        await interaction.editReply('Music is now playing!');
         return;
-    }
+        }
+        
+        /*
+            CASE 2: if input is a PLAYLIST 
+        */ 
+        if(playDL.yt_validate(link) === 'playlist') {
+        console.log('Play by playlist');
+        await interaction.editReply('Not supported yet!');
+        return;
+        }
 
-    // get queue from requested server (guild)
-    serverQueue = client.queue.get(voiceChannel.guild.id);
-    
-    /*
-        CASE 1: if input is a watch URL 
-    */ 
-    if(playDL.yt_validate(link) === 'video') {
-      console.log('Play by 1 link');
-      await playOne(client, link, serverQueue);
-      await interaction.editReply('Music is now playing!');
-      return;
-    }
-    
-    /*
-        CASE 2: if input is a PLAYLIST 
-    */ 
-    if(playDL.yt_validate(link) === 'playlist') {
-      console.log('Play by playlist');
-      await interaction.editReply('Not supported yet!');
-      return;
-    }
-
-    /*
-        CASE 3: if input is random list   
-    */ 
-    if(link.includes('&list=RD') && link.startsWith('http')) {
-      console.log('Play with random list');
-      await playList(voiceChannel, client, link);
-      await interaction.editReply('Playing a random list');
-    }
-    /*
-        CASE 4: if input is search terms 
-    */
-    else {
-    // playWithSearchResult(interaction);
-      console.log('Play with search term');
-      console.log(link);
-      await interaction.editReply(link);
+        /*
+            CASE 3: if input is random list   
+        */ 
+        if(link.includes('&list=RD') && link.startsWith('http')) {
+        console.log('Play with random list');
+        await playList(voiceChannel, client, link);
+        await interaction.editReply('Playing a random list');
+        }
+        /*
+            CASE 4: if input is search terms 
+        */
+        else {
+        // playWithSearchResult(interaction);
+        console.log('Play with search term');
+        console.log(link);
+        await interaction.editReply(link);
+        }
+    } 
+    catch (error) {
+        console.log('Cannot read Interaction');    
     }
 }
 
@@ -174,45 +179,55 @@ async function playList(voiceChannel, client, link, rt = 10) {
 // [still working]
 // Play with search term.
 async function playWithSearchResult(interaction) {
-    const link = interaction.options.getString('link');
-    const items = await ytsr(link, { limit: 5 })
-    .then(data => {
-        const searchRs = data.items.filter(item => item.type == 'video');
-        return searchRs;
-    });
-    console.log((await items).length);
-    console.log(await interaction);
-    await interaction.editReply({ embeds: [embed.searchResult.msg(items)] });
+    try {
+        const link = interaction.options.getString('link');
+        const items = await ytsr(link, { limit: 5 })
+        .then(data => {
+            const searchRs = data.items.filter(item => item.type == 'video');
+            return searchRs;
+        });
+        console.log((await items).length);
+        console.log(await interaction);
+        await interaction.editReply({ embeds: [embed.searchResult.msg(items)] });
+    } 
+    catch (error) {
+        console.log(error);
+    }
 }
 
 // Remove the current track, then play the next one.
 async function skip(interaction, client) {
-    const connection = getVoiceConnection(interaction.guildId);
-    const serverQueue = client.queue.get(interaction.guildId);
-    
-    if(!serverQueue) {
-        await interaction.reply('Queue is empty!');
-		return;
-    }
-    
-    if(!connection) {
-        await interaction.reply('Làm gì có bài nào mà bỏ??');
-		return;
-    }
+    try {
+        const connection = getVoiceConnection(interaction.guildId);
+        const serverQueue = client.queue.get(interaction.guildId);
+        
+        if(!serverQueue) {
+            await interaction.reply('Queue is empty!');
+            return;
+        }
+        
+        if(!connection) {
+            await interaction.reply('Làm gì có bài nào mà bỏ??');
+            return;
+        }
 
-    if(serverQueue.songs.length === 0) {
-        await interaction.reply('Không có bài nào cả!');
-		return;
-	}
+        if(serverQueue.songs.length === 0) {
+            await interaction.reply('Không có bài nào cả!');
+            return;
+        }
 
-	if(serverQueue.songs.length == 0) {
-        await interaction.reply('Hết bài rồi!');
-		return;
-	}
-	await playOne(client, serverQueue.songs.shift().url, serverQueue);
-    
-    await interaction.reply('Skipped!');
-    return;
+        if(serverQueue.songs.length == 0) {
+            await interaction.reply('Hết bài rồi!');
+            return;
+        }
+        await playOne(client, serverQueue.songs.shift().url, serverQueue);
+        
+        await interaction.reply('Skipped!');
+        return;
+    } 
+    catch (error) {
+        console.log(error);
+    }
 }
 
 // Display all the current tracks in server queue.

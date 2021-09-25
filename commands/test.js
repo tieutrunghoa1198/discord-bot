@@ -10,8 +10,6 @@ module.exports = {
     console.log(interaction);
       await textChannel.send('test');
       await interaction.reply('Lo cmm lo!');
-      // if(!interaction) {
-      //   console.log('true + 1');
-      // }
+      await interaction.editReply('Lo cmm lo!');
     },
 };
