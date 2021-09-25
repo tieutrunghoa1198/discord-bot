@@ -4,7 +4,7 @@ const leave = async (interaction, client) => {
   try {
     const serverQueue = client.queue.get(interaction.guildId);
     if(!serverQueue) {
-      await interaction.reply('You\'re not in a voice channel!');    
+      await interaction.reply('I am not in any channel.');    
       return;
     }
     else {
