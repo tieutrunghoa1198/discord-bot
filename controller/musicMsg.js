@@ -1,6 +1,6 @@
 const playDL = require('play-dl');
 const music = require('./music.js');
-const { getVoiceConnection, createAudioPlayer } = require('@discordjs/voice');
+const { createAudioPlayer } = require('@discordjs/voice');
 
 async function main(msg, client) {
     try {
@@ -8,7 +8,7 @@ async function main(msg, client) {
         const player = createAudioPlayer();
         const voiceChannel = msg.member.voice.channel;
         const textChannel = msg.guild.channels.cache.get(msg.channelId);
-        let connection = getVoiceConnection(voiceChannel.guild.id);
+        let connection = null;
         let serverQueue = client.queue.get(msg.guildId);
         
         console.log(msg);
@@ -62,10 +62,19 @@ async function main(msg, client) {
         /*
             CASE 3: if input is random list   
         */ 
-        if(link.includes('&list=RD') && link.startsWith('http')) {
+        if(link.includes('&list=RD')) {
             console.log('Play with random list');
             await music.playList(serverQueue, link, client);
             // await interaction.editReply('Playing a random list');
+        }
+        /*
+            CASE 4: if input is search terms 
+        */
+        else {
+        // playWithSearchResult(interaction);
+            console.log('Play with search term');
+            console.log(link);
+            // await interaction.editReply(link);
         }
     } 
     catch (error) {
