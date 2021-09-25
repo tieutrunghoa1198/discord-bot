@@ -8,6 +8,7 @@ const leave = async (interaction, client) => {
       return;
     }
     else {
+      client.queue.delete(interaction.guildId);
       serverQueue.connection.destroy();
       await interaction.reply('Cảm ơn các anh đã nghe. Lần sau alo em nhé!');
     }
