@@ -57,37 +57,37 @@ async function main(interaction, client) {
             CASE 1: if input is a watch URL 
         */ 
         if(playDL.yt_validate(link) === 'video') {
-        console.log('Play by 1 link');
-        await playOne(client, link, serverQueue);
-        await interaction.editReply('Music is now playing!');
-        return;
+            console.log('Play by 1 link');
+            await playOne(serverQueue, link, client);
+            await interaction.editReply('Music is now playing!');
+            return;
         }
         
         /*
             CASE 2: if input is a PLAYLIST 
         */ 
         if(playDL.yt_validate(link) === 'playlist') {
-        console.log('Play by playlist');
-        await interaction.editReply('Not supported yet!');
-        return;
+            console.log('Play by playlist');
+            await interaction.editReply('Not supported yet!');
+            return;
         }
 
         /*
             CASE 3: if input is random list   
         */ 
         if(link.includes('&list=RD') && link.startsWith('http')) {
-        console.log('Play with random list');
-        await playList(voiceChannel, client, link);
-        await interaction.editReply('Playing a random list');
+            console.log('Play with random list');
+            await playList(serverQueue, link, client);
+            await interaction.editReply('Playing a random list');
         }
         /*
             CASE 4: if input is search terms 
         */
         else {
         // playWithSearchResult(interaction);
-        console.log('Play with search term');
-        console.log(link);
-        await interaction.editReply(link);
+            console.log('Play with search term');
+            console.log(link);
+            await interaction.editReply(link);
         }
     } 
     catch (error) {
@@ -123,7 +123,7 @@ async function join(voiceChannel) {
 }
 
 // Play one song.
-async function playOne(client, link, serverQueue) {
+async function playOne(serverQueue, link, client) {
     try {
         if(!link) {
             return;
@@ -153,22 +153,21 @@ async function playOne(client, link, serverQueue) {
 }
 
 // Play with random playlist (RD).
-async function playList(voiceChannel, client, link, rt = 10) {
+async function playList(serverQueue, link, client, rt = 40) {
     if(rt === 0) return;
     
     // sometimes cant fount a random list [bugs fixed]
     try {
         const videoId = ytdl.getURLVideoID(link);
-        const serverQueue = await client.queue.get(voiceChannel.guild.id);
         // eslint-disable-next-line no-unused-vars
         const mixPlaylist = await ytmpl(videoId, { hl: 'en', gl: 'US' }).then(async data => {
             if(!data) {
                 console.log('cant found items in random list');
-                playList(voiceChannel, client, link, rt - 1);
+                playList(serverQueue, link, client, rt = 40);
                 return;
             }
             serverQueue.songs = data.items;
-            playOne(client, serverQueue.songs.shift().url, serverQueue);
+            playOne(serverQueue, serverQueue.songs.shift().url, client);
         });
     } 
     catch (error) {
@@ -220,7 +219,7 @@ async function skip(interaction, client) {
             await interaction.reply('Hết bài rồi!');
             return;
         }
-        await playOne(client, serverQueue.songs.shift().url, serverQueue);
+        await playOne(serverQueue, serverQueue.songs.shift().url, client);
         
         await interaction.reply('Skipped!');
         return;
@@ -259,4 +258,6 @@ module.exports = {
     main,
     skip,
     list,
+    join,
+    playList,
 };

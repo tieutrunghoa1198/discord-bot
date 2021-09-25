@@ -1,38 +1,15 @@
-const channels = require('../models/Channel.js');
+const music = require('../controller/musicMsg.js');
+const messageControl = require('../controller/messageControl.js');
 
-const message = async (msg) => {
-  try {
-    const id = msg.channelId;
-  
-  if(msg.content.startsWith(';;') && !msg.deleted) {
-    await msg.delete();     
-    console.log(msg.deleted);
+const message = async (msg, client) => {
+  const { content } = msg;
+  // check permission before execute
+  if(content.startsWith('https')) {
+    await music.main(msg, client);
+    return;
   }
 
-  channels.find({ channelId: id }, async function(err, data) {
-    // if there is no data for filtering
-    if(err) {
-      console.log(err);
-      return;
-    }
-
-    if(data.length === 0 || data.length === undefined) {
-      return;
-    }
-
-    // if permitted users are in database, then pass them
-    if(msg.member.roles.cache.get(data[0].permittedUsers[0])) {
-      return;
-    }
-    else if (!msg.deleted) {
-      await msg.delete();     
-      console.log(msg.deleted);
-    }
-  });
-  } 
-  catch (error) {
-    console.log(error);
-  }
+  await messageControl.deleteMsg(msg);
 };
 
 module.exports = message;

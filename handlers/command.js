@@ -10,7 +10,7 @@ const command = async (interaction, client) => {
 	} 
 	catch (error) {
 		console.error(error);
-		await interaction.followUp({ content: error, ephemeral: true });
+		// await interaction.followUp({ content: error, ephemeral: true });
 	}
 };
 
