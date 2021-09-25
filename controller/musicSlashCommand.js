@@ -2,7 +2,12 @@ const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const playDL = require('play-dl');
 const ytmpl = require('yt-mix-playlist');
-const { joinVoiceChannel, createAudioResource, getVoiceConnection, createAudioPlayer } = require('@discordjs/voice');
+const { 
+    joinVoiceChannel, 
+    createAudioResource, 
+    getVoiceConnection, 
+    createAudioPlayer, 
+} = require('@discordjs/voice');
 const embed = require('../embedMessage/index.js');
 
 // Main Function of Music.

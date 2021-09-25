@@ -1,6 +1,6 @@
 require('dotenv').config();
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const music = require('../controller/music.js');
+const music = require('../controller/musicSlashCommand.js');
 // export slash command 
 module.exports = {
   data: new SlashCommandBuilder()

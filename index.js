@@ -6,7 +6,7 @@ const entity = require('./entities/entity.js');
 const handler = require('./handlers/index.js');
 const { AudioPlayerStatus } = require('@discordjs/voice');
 const queue = new Map();
-const music = require('./controller/music.js');
+const music = require('./controller/musicSlashCommand.js');
 const client = new Client(
 	{ 
 		intents: 

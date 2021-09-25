@@ -1,5 +1,5 @@
 const playDL = require('play-dl');
-const music = require('./music.js');
+const music = require('./musicSlashCommand.js');
 const { createAudioPlayer } = require('@discordjs/voice');
 
 async function main(msg, client) {
@@ -12,6 +12,7 @@ async function main(msg, client) {
         let serverQueue = client.queue.get(msg.guildId);
 
         if(!voiceChannel) {
+            console.log('using msg: not in a voice channel');
             textChannel.send('Anh vào phòng trước đi.');
             return;
         }
@@ -48,7 +49,7 @@ async function main(msg, client) {
 
         if(playDL.yt_validate(link) === 'video') {
             console.log('Play with a link');
-            await music.playOne(serverQueue, msg.content, client);
+            await music.playOne(serverQueue, link, client);
         }
 
         if(playDL.yt_validate(link) === 'playlist') {

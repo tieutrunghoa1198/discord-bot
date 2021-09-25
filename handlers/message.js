@@ -1,4 +1,4 @@
-const music = require('../controller/musicMsg.js');
+const music = require('../controller/musicMessageCommand.js');
 const messageControl = require('../controller/messageControl.js');
 
 const message = async (msg, client) => {
