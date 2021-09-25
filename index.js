@@ -34,7 +34,7 @@ client.on('test', metadata => {
 
 	if(serverQueue.isNew) {
 		serverQueue.isNew = false;
-		serverQueue.player.on(AudioPlayerStatus.Idle, async (data) => {
+		serverQueue.player.on(AudioPlayerStatus.Idle, async () => {
 			// console.log(data.resource.metadata.guildId);
 			if(serverQueue.songs.length === 0) {
 				return;

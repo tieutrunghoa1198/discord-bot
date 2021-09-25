@@ -7,7 +7,6 @@ const message = async (msg, client) => {
   // check permission before execute
   if(content.startsWith('https')) {
     await music.main(msg, client);
-    return;
   }
 
   await messageControl.deleteMsg(msg);
