@@ -67,15 +67,6 @@ async function main(msg, client) {
             await music.playList(serverQueue, link, client);
             // await interaction.editReply('Playing a random list');
         }
-        /*
-            CASE 4: if input is search terms 
-        */
-        else {
-        // playWithSearchResult(interaction);
-            console.log('Play with search term');
-            console.log(link);
-            // await interaction.editReply(link);
-        }
     } 
     catch (error) {
         console.log(error);
