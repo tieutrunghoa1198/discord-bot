@@ -9,7 +9,7 @@ const deleteMsg = async (msg) => {
             console.log(msg.deleted);   
         }
     
-        channels.find({ channelId: id }, async function(err, data) {
+        await channels.find({ channelId: id }, async function(err, data) {
           // if there is no data for filtering
           if(err) {
             console.log(err);
