@@ -69,5 +69,9 @@ client.once('ready', () => {
 	console.log(client.user.username);
 });
 
+process.on('unhandledRejection', error => {
+	console.error('Unhandled promise rejection:', error);
+});
+
 // login
 client.login(TOKEN);
