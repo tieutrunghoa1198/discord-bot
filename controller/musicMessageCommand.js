@@ -64,6 +64,7 @@ async function main(msg, client) {
         */ 
         if(link.includes('&list=RD')) {
             console.log('Play with random list');
+            console.log(link);
             await music.playList(serverQueue, link, client);
             // await interaction.editReply('Playing a random list');
         }
