@@ -169,7 +169,6 @@ async function playList(serverQueue, link, client, rt = 100) {
     // sometimes cant fount a random list [bugs fixed]
     try {
         const videoId = ytdl.getURLVideoID(link);
-        console.log(videoId);
         // eslint-disable-next-line no-unused-vars
         const mixPlaylist = await ytmpl(videoId, { hl: 'en', gl: 'US' }).then(async data => {
             if(!data) {
@@ -177,7 +176,7 @@ async function playList(serverQueue, link, client, rt = 100) {
                 playList(serverQueue, link, client, rt - 1);
                 return;
             }
-            console.log(data.items[0] + ' List random');
+            console.log(data.items[0].url + ' List random');
             serverQueue.songs = data.items;
             playOne(serverQueue, serverQueue.songs.shift().url, client);
         });
