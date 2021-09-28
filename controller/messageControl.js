@@ -29,6 +29,7 @@ const deleteMsg = async (msg) => {
           // Only log the error if it is not an Unknown Message error
           if (error) {
             console.error('Failed to delete the message:', error);
+            return;
           }
         });   
         console.log(msg.deleted);

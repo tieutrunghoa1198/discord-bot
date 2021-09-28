@@ -63,7 +63,7 @@ client.on('interactionCreate', async interaction => {
 client.on('messageCreate', msg => {
 	handler.message(msg, client);
 });
-
+// 
 // bot is ready to use!!
 client.once('ready', () => {
 	client.user.setActivity('/play', { type: 'PLAYING' });
