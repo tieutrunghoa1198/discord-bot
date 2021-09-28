@@ -112,9 +112,12 @@ async function formatURL(rawLink) {
 
     if(!playDL.validate(rawLink)) {
         console.log(rawLink);
+    }
+    else {
         const videoId = ytdl.getURLVideoID(rawLink);
         const youtubeURL = 'https://www.youtube.com/watch?v=';
         formattedLink = youtubeURL + videoId;
+        console.log(formattedLink);
     }
     return formattedLink;
 }
