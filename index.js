@@ -43,6 +43,7 @@ client.on('test', metadata => {
 		});
 
 		serverQueue.player.on(AudioPlayerStatus.Playing, () => {
+			// console.log(data.resource.metadata.source);
 			console.log('Playing!');
 		});
 
@@ -55,7 +56,7 @@ client.on('test', metadata => {
 
 // commands handler
 client.on('interactionCreate', async interaction => {
-		handler.command(interaction, client);
+	handler.command(interaction, client);
 });
 
 // delete message in specified channels
@@ -67,6 +68,10 @@ client.on('messageCreate', msg => {
 client.once('ready', () => {
 	client.user.setActivity('/play', { type: 'PLAYING' });
 	console.log(client.user.username);
+});
+
+process.on('unhandledRejection', error => {
+	console.error('Unhandled promise rejection:', error);
 });
 
 // login

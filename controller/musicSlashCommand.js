@@ -1,3 +1,4 @@
+require('dotenv').config();
 const ytdl = require('ytdl-core');
 const ytsr = require('ytsr');
 const playDL = require('play-dl');
@@ -90,7 +91,7 @@ async function main(interaction, client) {
             CASE 4: if input is search terms 
         */
         else {
-        // playWithSearchResult(interaction);
+            await playWithSearchResult(interaction);
             console.log('Play with search term');
             console.log(link);
             await interaction.editReply(link);
@@ -137,12 +138,13 @@ async function playOne(serverQueue, link, client) {
         const youtubeURL = await formatURL(link);
         const guildId = serverQueue.voiceChannel.guild.id;
         const source = await playDL.stream(youtubeURL);
+        // const info =
         const resource = createAudioResource(
             source.stream, 
             {
                 inputType : source.type,
                 metadata: {
-                    guildId: guildId,
+                    source: source,
                 },
             },
         );
@@ -154,7 +156,7 @@ async function playOne(serverQueue, link, client) {
         serverQueue.player.play(resource);
     } 
     catch (error) {
-        console.log(error);
+        console.log(error + 'asd');
     }
 }
 
@@ -165,11 +167,12 @@ async function playList(serverQueue, link, client, rt = 40) {
     // sometimes cant fount a random list [bugs fixed]
     try {
         const videoId = ytdl.getURLVideoID(link);
+        console.log(videoId);
         // eslint-disable-next-line no-unused-vars
         const mixPlaylist = await ytmpl(videoId, { hl: 'en', gl: 'US' }).then(async data => {
             if(!data) {
                 console.log('cant found items in random list');
-                playList(serverQueue, link, client, rt = 40);
+                playList(serverQueue, link, client, rt - 1);
                 return;
             }
             serverQueue.songs = data.items;

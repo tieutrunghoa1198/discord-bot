@@ -50,6 +50,7 @@ async function main(msg, client) {
         if(playDL.yt_validate(link) === 'video') {
             console.log('Play with a link');
             await music.playOne(serverQueue, link, client);
+            return;
         }
 
         if(playDL.yt_validate(link) === 'playlist') {
