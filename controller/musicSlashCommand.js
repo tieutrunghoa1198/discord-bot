@@ -162,7 +162,7 @@ async function playOne(serverQueue, link, client) {
 }
 
 // Play with random playlist (RD).
-async function playList(serverQueue, link, client, rt = 40) {
+async function playList(serverQueue, link, client, rt = 100) {
     if(rt === 0) return;
     
     // sometimes cant fount a random list [bugs fixed]
@@ -176,6 +176,7 @@ async function playList(serverQueue, link, client, rt = 40) {
                 playList(serverQueue, link, client, rt - 1);
                 return;
             }
+            console.log(data.items + ' List random');
             serverQueue.songs = data.items;
             playOne(serverQueue, serverQueue.songs.shift().url, client);
         });
