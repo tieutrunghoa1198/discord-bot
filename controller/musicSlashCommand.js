@@ -132,9 +132,10 @@ async function join(voiceChannel) {
 // Play one song.
 async function playOne(serverQueue, link, client) {
     const youtubeURL = await formatURL(link);
+    console.log(youtubeURL + ' test');
         const guildId = serverQueue.voiceChannel.guild.id;
         const source = await playDL.stream(youtubeURL);
-        console.log(youtubeURL + ' test');
+        
         const resource = createAudioResource(
             source.stream, 
             {
