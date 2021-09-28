@@ -176,7 +176,7 @@ async function playList(serverQueue, link, client, rt = 100) {
                 playList(serverQueue, link, client, rt - 1);
                 return;
             }
-            console.log(data.items + ' List random');
+            console.log(data.items[0] + ' List random');
             serverQueue.songs = data.items;
             playOne(serverQueue, serverQueue.songs.shift().url, client);
         });
