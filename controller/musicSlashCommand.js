@@ -131,11 +131,7 @@ async function join(voiceChannel) {
 
 // Play one song.
 async function playOne(serverQueue, link, client) {
-    try {
-        if(!link) {
-            return;
-        }
-        const youtubeURL = await formatURL(link);
+    const youtubeURL = await formatURL(link);
         const guildId = serverQueue.voiceChannel.guild.id;
         const source = await playDL.stream(youtubeURL);
         console.log(youtubeURL + ' test');
@@ -154,6 +150,11 @@ async function playOne(serverQueue, link, client) {
         // create a queue if it not existed.
         client.emit('test', data);
         serverQueue.player.play(resource);
+    try {
+        if(!link) {
+            return;
+        }
+        
     } 
     catch (error) {
         console.log(error + 'asd');
