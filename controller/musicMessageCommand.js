@@ -31,6 +31,7 @@ async function main(msg, client) {
                     autoPlay: false,
                     isNew: true,
                     messageRequest: 0,
+                    timeOut: null,
                 };
                 connection.subscribe(player);
                 client.queue.set(voiceChannel.guild.id, queueConstruct);
