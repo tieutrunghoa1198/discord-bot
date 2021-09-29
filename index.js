@@ -44,6 +44,7 @@ client.on('test', metadata => {
 						serverQueue.connection.destroy();
 						// await interaction.reply('Cảm ơn các anh đã nghe. Lần sau alo em nhé!');
 					}, 5000);
+					return;
 				}
 				await music.playOne(serverQueue, serverQueue.songs.shift().url, metadata.client);
 			});
