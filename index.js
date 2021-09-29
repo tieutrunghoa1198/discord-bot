@@ -37,13 +37,11 @@ client.on('test', metadata => {
 		if(serverQueue.isNew) {
 			serverQueue.isNew = false;
 			serverQueue.player.on(AudioPlayerStatus.Idle, async () => {
-				// console.log(data.resource.metadata.guildId);
 				if(serverQueue.songs.length === 0) {
 					serverQueue.timeOut = setTimeout(() => {
 						client.queue.delete(serverQueue.voiceChannel.guild.id);
 						serverQueue.connection.destroy();
-						// await interaction.reply('Cảm ơn các anh đã nghe. Lần sau alo em nhé!');
-					}, 5000);
+					}, 5 * 60 * 1000);
 					return;
 				}
 				await music.playOne(serverQueue, serverQueue.songs.shift().url, metadata.client);
@@ -93,16 +91,6 @@ client.on('messageCreate', msg => {
 client.once('ready', () => {
 	client.user.setActivity('/play', { type: 'PLAYING' });
 	console.log(client.user.username);
-});
-
-client.on('voiceStateUpdate', (oldState, newState) => {
-	try {
-		console.log(newState);
-	} 
-	catch (error) {
-		console.log(error);	
-	}
-	return;
 });
 
 process.on('unhandledRejection', error => {
