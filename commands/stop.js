@@ -11,7 +11,8 @@ const stop = async (interaction, client) => {
         serverQueue.songs = [];
         serverQueue.player.stop();
         await interaction.reply('The player is now empty!');
-
+        // skip the player from TFT chat channel 
+        // not the player in Didnt Read
       }
     } 
     catch (error) {

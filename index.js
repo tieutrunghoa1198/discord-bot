@@ -41,7 +41,8 @@ client.on('test', metadata => {
 					serverQueue.timeOut = setTimeout(() => {
 						client.queue.delete(serverQueue.voiceChannel.guild.id);
 						serverQueue.connection.destroy();
-					}, 5 * 60 * 1000);
+						// xoa sai player [bugs]
+					}, 10000);
 					return;
 				}
 				await music.playOne(serverQueue, serverQueue.songs.shift().url, metadata.client);

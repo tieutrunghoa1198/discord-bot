@@ -83,7 +83,7 @@ async function main(interaction, client) {
         /*
             CASE 3: if input is random list   
         */ 
-        if(link.includes('&list=RD') && link.startsWith('http')) {
+        if(link.includes('&list=RD') && link.startsWith('https://www.youtube.com/')) {
             console.log('Play with random list');
             await playList(serverQueue, link, client);
             await interaction.editReply('Playing a random list');
@@ -142,8 +142,12 @@ async function playOne(serverQueue, link, client) {
         const youtubeURL = await formatURL(link);
         console.log(youtubeURL + ' test');
         const guildId = serverQueue.voiceChannel.guild.id;
-        const source = await playDL.stream(youtubeURL);
-        
+        // const source = await playDL.stream(youtubeURL);
+        const source = await playDL.stream(youtubeURL, { proxy : [{
+                host : '118.70.140.206',
+                port : 80,
+            }],
+        });
         const resource = createAudioResource(
             source.stream, 
             {
