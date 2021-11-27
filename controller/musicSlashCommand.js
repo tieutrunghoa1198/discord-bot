@@ -142,12 +142,12 @@ async function playOne(serverQueue, link, client) {
         const youtubeURL = await formatURL(link);
         console.log(youtubeURL + ' test');
         const guildId = serverQueue.voiceChannel.guild.id;
-        // const source = await playDL.stream(youtubeURL);
-        const source = await playDL.stream(youtubeURL, { proxy : [{
-                host : '118.70.140.206',
-                port : 80,
-            }],
-        });
+        const source = await playDL.stream(youtubeURL);
+        // const source = await playDL.stream(youtubeURL, { proxy : [{
+        //         host : '118.70.140.206',
+        //         port : 80,
+        //     }],
+        // });
         const resource = createAudioResource(
             source.stream, 
             {
