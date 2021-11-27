@@ -48,13 +48,13 @@ async function main(msg, client) {
             return;
         }
 
-        if(playDL.yt_validate(link) === 'video') {
+        if(playDL.yt_validate(link) === 'video' && link.startsWith('https://www.youtube.com/')) {
             console.log('Play with a link');
             await music.playOne(serverQueue, link, client);
             return;
         }
 
-        if(playDL.yt_validate(link) === 'playlist') {
+        if(playDL.yt_validate(link) === 'playlist' && link.startsWith('https://www.youtube.com/')) {
             console.log('Play by playlist');
             // await interaction.editReply('Not supported yet!');
             return;
@@ -63,7 +63,7 @@ async function main(msg, client) {
         /*
             CASE 3: if input is random list   
         */ 
-        if(link.includes('&list=RD')) {
+            if(link.includes('&list=RD') && link.startsWith('https://www.youtube.com/')) {
             console.log('Play with random list');
             await music.playList(serverQueue, link, client);
             // await interaction.editReply('Playing a random list');
