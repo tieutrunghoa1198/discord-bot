@@ -7,9 +7,6 @@ const handler = require('./handlers/index.js');
 const { AudioPlayerStatus } = require('@discordjs/voice');
 const queue = new Map();
 const music = require('./controller/musicSlashCommand.js');
-const port = 1998;
-const express = require('express');
-const app = express();
 const client = new Client(
 	{ 
 		intents: 
@@ -24,15 +21,6 @@ const client = new Client(
 entity.mongodb.dbConnect(mongoose);
 entity.commands.load(client);
 client.queue = queue;
-
-app.get('/api', (req, res) => {
-	console.log(req);
-	res.send('something cool');
-});
-
-app.listen(port, () => {
-	console.log('listening: ' + port);
-});
 
 // Solution solved!!! [Smartest person]
 client.on('test', metadata => {
