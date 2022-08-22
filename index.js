@@ -1,5 +1,5 @@
 require('dotenv').config();
-const TOKEN = process.env.LOCALTOKEN || process.env.TOKEN;
+const TOKEN = 'OTc3NTIzMzkzMDYwNTYwOTY3.GtbFPe.jX0ja5LbID5oEUAMaHdtq76O0M4GbZJCYMq090' || process.env.TOKEN;
 const { Client, Intents } = require('discord.js');
 const mongoose = require('mongoose');
 const entity = require('./entities/entity.js');
@@ -7,6 +7,9 @@ const handler = require('./handlers/index.js');
 const { AudioPlayerStatus } = require('@discordjs/voice');
 const queue = new Map();
 const music = require('./controller/musicSlashCommand.js');
+const port = 1998;
+const express = require('express');
+const app = express();
 const client = new Client(
 	{ 
 		intents: 
@@ -22,6 +25,14 @@ entity.mongodb.dbConnect(mongoose);
 entity.commands.load(client);
 client.queue = queue;
 
+app.get('/api', (req, res) => {
+	console.log(req);
+	res.send('something cool');
+});
+
+app.listen(port, () => {
+	console.log('listening: ' + port);
+});
 
 // Solution solved!!! [Smartest person]
 client.on('test', metadata => {

@@ -3,10 +3,14 @@ const messageControl = require('../controller/messageControl.js');
 
 const message = async (msg, client) => {
   const { content } = msg;
-  
-  // check permission before execute
-  if(content.startsWith('https')) {
-    await music.main(msg, client);
+  // #thoc-kinh
+  const AKG_SV_MAIN_CHAT = '325650252386271238';
+
+  if (msg.channelId === AKG_SV_MAIN_CHAT) {
+    return;
+  }
+  else if(content.startsWith('https://www.youtube.com/')) {
+      await music.main(msg, client);
   }
 
   await messageControl.deleteMsg(msg);

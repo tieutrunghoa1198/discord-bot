@@ -2,3 +2,5 @@ node_modules/
 scripts/
 .vscode
 .env
+deploy-command.js
+.idea
