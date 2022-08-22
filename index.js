@@ -1,5 +1,5 @@
 require('dotenv').config();
-const TOKEN = 'OTc3NTIzMzkzMDYwNTYwOTY3.GZ9yeM.h0dQXkoOhhTESOIYgv4uadS6lrSJC3yeIc5hsE' || process.env.TOKEN;
+const TOKEN = process.env.TOKEN;
 const { Client, Intents } = require('discord.js');
 const mongoose = require('mongoose');
 const entity = require('./entities/entity.js');
