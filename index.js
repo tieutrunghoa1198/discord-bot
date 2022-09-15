@@ -1,5 +1,7 @@
 require('dotenv').config();
 const TOKEN = process.env.LOCALTOKEN || process.env.TOKEN;
+const express = require('express');
+const app = express();
 const { Client, Intents } = require('discord.js');
 const mongoose = require('mongoose');
 const entity = require('./entities/entity.js');
@@ -100,3 +102,7 @@ process.on('unhandledRejection', error => {
 
 // login
 client.login(TOKEN);
+
+app.login(process.env.PORT || 3000, () => {
+	console.log('running on port');
+});
