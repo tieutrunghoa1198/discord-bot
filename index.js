@@ -24,7 +24,6 @@ entity.mongodb.dbConnect(mongoose);
 entity.commands.load(client);
 client.queue = queue;
 
-
 // Solution solved!!! [Smartest person]
 client.on('test', metadata => {
 	
