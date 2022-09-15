@@ -79,7 +79,7 @@ client.on('interactionCreate', async interaction => {
 	}
 });
 
-// delete message in specified channels
+// delete message in specified channel
 client.on('messageCreate', msg => {
 	try {
 		handler.message(msg, client);
