@@ -102,6 +102,6 @@ process.on('unhandledRejection', error => {
 // login
 client.login(TOKEN);
 
-app.login(process.env.PORT || 3000, () => {
+app.listen(process.env.PORT || 3000, () => {
 	console.log('running on port');
 });
