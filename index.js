@@ -8,6 +8,10 @@ const entity = require('./entities/entity.js');
 const handler = require('./handlers/index.js');
 const { AudioPlayerStatus } = require('@discordjs/voice');
 const queue = new Map();
+const { createServer } = require('http');
+const WebSocket = require('ws');
+const server = createServer(app);
+const wss = new WebSocket.Server({ server });
 const music = require('./controller/musicSlashCommand.js');
 const client = new Client(
 	{ 
@@ -104,4 +108,21 @@ client.login(TOKEN);
 
 app.listen(process.env.PORT || 3000, () => {
 	console.log('running on port');
+});
+
+
+wss.on('connection', function(ws) {
+  const id = setInterval(function() {
+    ws.send(JSON.stringify(process.memoryUsage()), function() {
+      //
+      // Ignore errors.
+      //
+    });
+  }, 100);
+  console.log('started client interval');
+
+  ws.on('close', function() {
+    console.log('stopping client interval');
+    clearInterval(id);
+  });
 });
