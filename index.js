@@ -22,7 +22,7 @@ const client = new Client(
 			Intents.FLAGS.GUILD_VOICE_STATES,
 		],
 	});
-
+// test tdt
 // initiate db and commands 
 entity.mongodb.dbConnect(mongoose);
 entity.commands.load(client);
